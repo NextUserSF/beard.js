@@ -3,12 +3,6 @@ beard.js
 
 Logic less templating engine, for JavaScript
 
-Dependencies
-------------
-
-Node.js & npm
-For package distribution: [Bower](http://bower.io/)
-
 Setup
 -----
 

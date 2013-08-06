@@ -20,7 +20,7 @@
     (Beard = function( tpl , data, elements ) {
         this.tpl = tpl || '' ;
         this.dat = data || {} ;
-        this.UDEF = this.Beard ;
+        this.UDEF = undefined ;
         this.elements = elements || {} ;
     }).prototype = {
 
