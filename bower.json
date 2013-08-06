@@ -1,0 +1,23 @@
+{
+    "name": "Beard.js",
+    "version": "1.0.0",
+    "description": "Logic less templating engine",
+    "main": "dist/beard.min.js",
+    "keywords": [
+        "template"
+    ],
+    "homepage": "https://github.com/NextUserSF/beard.js",
+    "bugs": "https://github.com/NextUserSF/beard.js/issues",
+    "author": {
+        "name": "Xavier Laumonier",
+        "email": "xlaumonier@gmail.com",
+        "url": "http://twitter.com/xavlaumonier"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:NextUserSF/beard.js.git"
+    },
+    "licenses": [{
+        "type": "MIT"
+    }]
+}
