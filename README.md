@@ -24,9 +24,9 @@ make
 `make` targets
 --------------
 
-`make develop` or just `make`: builds development version of the library in `build/beard.debug.js`.
+`make develop` or just `make`: builds development version of the library in `build/beard.js`.
 
-`make production`: builds production version of the library in `build/beard.min.js`.
+`make production`: builds production version of the library in `dist/beard.min.js`.
 
 `make lint`: checks files in `src` directory with `jslint` tool.
 

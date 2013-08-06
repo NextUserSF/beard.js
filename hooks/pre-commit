@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. $(dirname $0)/functions.sh
+
+err=0
+for js in `f2ci | grep '\.js$'`
+do
+	# check file with jslint
+	jslint $js >/dev/null
+
+	if [ $? -ne 0 ]; then
+		err=1
+		echo "JSLint failed: $js"
+	fi
+
+	# check file for "forbidden" entries
+	match=$(awk '/console\.log/,/debugger;/' $js | wc -l)
+
+	if [ $match -gt 0 ]; then
+		err=1
+		echo "Forbidden entries detected in the code: $js"
+	fi
+done
+
+if [ $err -ne 0 ]; then
+	echo "--"
+	echo "Commit failed. Correct the issues described above and try again."
+	echo "To force commit, run 'git commit --no-verify'"
+fi
+
+exit $err
