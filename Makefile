@@ -1,56 +1,45 @@
-NODE_MODULES = node_modules
-BRUNCH = $(NODE_MODULES)/.bin/brunch
-JSLINT = $(NODE_MODULES)/.bin/jslint
+NODE_MODULES     = $(CURDIR)/node_modules
+NODE_MODULES_BIN = $(NODE_MODULES)/.bin
 
-SRC_DIR = $(CURDIR)/src
+BOWER            = $(NODE_MODULES_BIN)/bower
+JSLINT           = $(NODE_MODULES_BIN)/jslint
+PHANTOMJS        = $(NODE_MODULES_BIN)/phantomjs
+TEST_RUNNER      = $(CURDIR)/spec/runner.phantom.js
+UGLIFYJS         = $(NODE_MODULES_BIN)/uglifyjs
+UGLIFYJS_ARGS    = -c -m # see https://github.com/mishoo/UglifyJS2#usage for details
 
-RELEASE_REPO = git@github.com:NextUserSF/beard.js.git
-RELEASE_DIR = build
-RELEASE_FILES = beard.js beard.min.js
+BOWER_COMPONENTS = $(CURDIR)/bower_components
 
-GIT_DIR = $(shell git rev-parse --git-dir)
-GIT_HOOKS = $(GIT_DIR)/hooks
-HOOKS = $(CURDIR)/hooks/*
+SRC              = $(CURDIR)/src/*.js
+DEST             = $(CURDIR)/lib/beard.min.js
 
-# Default make target
-develop:
-	@echo "Building application with brunch (development)..."
-	@$(BRUNCH) build -o
+all: $(NODE_MODULES) lib
 
-production:
-	@echo "Building application with brunch (production)..."
-	@$(BRUNCH) build -o -c config-production.coffee
+lint: .lint
 
-check-git-dirty:
-	@if [ -n "$(shell git status --porcelain)" ]; then \
-		echo "There are uncommited changes. Please, commit and try again."; \
-		exit 1; \
-	fi
+.lint: $(SRC)
+	$(JSLINT) $(wildcard $(SRC)) && touch $@
 
-release: check-git-dirty develop production
-	@echo "Release..."
-	@npm version patch
-	@git commit -m "New version `grep version $(CURDIR)/package.json | grep -o '[0-9]\.[0-9]\.[0-9]\+'`"
-	@git push
+lib: lint $(DEST)
 
-lint:
-	@echo Checking files with JSLint...
-	@find $(SRC_DIR) -name "*.js" -print0 | xargs -0 $(JSLINT)
+$(DEST): $(SRC)
+	mkdir -p $(@D)
+	$(UGLIFYJS) $^ $(UGLIFYJS_ARGS) -o $@
+
+$(NODE_MODULES): package.json
+	npm install
+
+test: .test
+
+.test: lib $(BOWER_COMPONENTS)
+	$(PHANTOMJS) $(TEST_RUNNER) && touch $@
+
+$(BOWER_COMPONENTS): bower.json $(NODE_MODULES)
+	$(BOWER) install
 
 clean:
-	@echo Cleaning...
-	@rm -rf build
-
-install-hooks:
-	@echo Installing git hooks...
-	@for FILE in $(HOOKS); do \
-		ln -s -f $$FILE $(GIT_HOOKS); \
-	done
-
-.PHONY: \
-    check-git-dirty \
-    clean \
-    develop \
-    install-hooks \
-    production \
-    release \
+	rm -rf $(DEST)
+	rm -rf $(NODE_MODULES)
+	rm -rf $(BOWER_COMPONENTS)
+	rm -ff .lint
+	rm -rf .test

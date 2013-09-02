@@ -1,27 +1,28 @@
 {
-    "name": "Beard.js",
-    "version": "1.0.0",
-    "description": "Logic less templating engine",
-    "main": "./dist/beard.min.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:NextUserSF/beard.js.git"
-    },
-    "author": {
-        "name": "Xavier Laumonier",
-        "email": "xlaumonier@gmail.com",
-        "url": "http://twitter.com/xavlaumonier"
-    },
-    "bugs": {
-        "url": "https://github.com/NextUserSF/beard.js/issues"
-    },
-    "dependencies": {
-        "brunch": "~1.7.0",
-        "javascript-brunch": "~1.6.0",
-        "uglify-js-brunch": "~1.7.2",
-        "jslint": "~0.1.9"
-    }
+  "name": "Beard.js",
+  "version": "1.0.0",
+  "description": "Logic less templating engine",
+  "main": "./lib/beard.min.js",
+  "scripts": {
+    "prepublish": "make lib",
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:NextUserSF/beard.js.git"
+  },
+  "author": {
+    "name": "Xavier Laumonier",
+    "email": "xlaumonier@gmail.com",
+    "url": "http://twitter.com/xavlaumonier"
+  },
+  "bugs": {
+    "url": "https://github.com/NextUserSF/beard.js/issues"
+  },
+  "devDependencies": {
+    "bower": "~1.2.5",
+    "jslint": "~0.1.9",
+    "phantomjs": "~1.9.1-8",
+    "uglify-js": "~2.4.0"
+  }
 }
