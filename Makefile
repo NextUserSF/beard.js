@@ -43,3 +43,5 @@ clean:
 	@rm -rf $(BOWER_COMPONENTS)
 	@rm -ff .lint
 	@rm -rf .test
+
+.PHONY: all clean lib lint test
