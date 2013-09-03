@@ -11,11 +11,11 @@
 
     /*
        Constructor: Beard
-        
+
         Parameters:
             tpl {String} [] Template
-            data {Object} [] Data    
-            elements {Object} [] Elements   
+            data {Object} [] Data
+            elements {Object} [] Elements
     */
     (Beard = function( tpl , data, elements ) {
         this.tpl = tpl || '' ;
@@ -31,10 +31,10 @@
 
             Parameters:
                 tpl {String} The template as a string
-            
-                
+
+
             Return:
-            {Beard} Current instance for chained command on this element    
+            {Beard} Current instance for chained command on this element
         */
         set: function ( tpl )
         {
@@ -47,9 +47,9 @@
             Function: get
 
             Get the template
-    
-            
-                
+
+
+
             Return:
             {String} The template as string
         */
@@ -62,12 +62,12 @@
             Function: render
 
             Render the template
-    
-            
+
+
             Parameters:
                 data {Object} [Optional] Data source
-            
-                
+
+
             Return:
             {String} Compilated template
         */
@@ -82,9 +82,9 @@
         },
         /*
             Function: getRequired
-            
+
             Compile the template, and returns a list of required elements and variables
-            
+
             Returns an object containing an array of variables, and an array of elements:
 
                 {
@@ -97,11 +97,11 @@
                         'other_variable'
                     ]
                 }
-            
+
             Parameters:
                 tpl {String} Template to precompile. Optional, default: template set
-            
-                
+
+
             Return:
             {Object} On object containing arrays of required elements and variables
         */
@@ -131,7 +131,7 @@
                     t = tpl.indexOf('%>', i) ;
                     key = this.trim(tpl.substring(j+3, t)) ;
                     j = tpl.indexOf('<%- ' + key + ' %>', t);
-                    
+
                     if ( j === -1 ) {
                         throw new Error ('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
                     }
@@ -175,15 +175,15 @@
 
         /*
             Function: compile
-            
+
             Compile the template with data
-    
-            
+
+
             Parameters:
                 tpl {String} Template
                 data {Object} Data source
-            
-                
+
+
             Return:
             {String} Result of template compilation
         */
@@ -210,13 +210,13 @@
                 // Go through
                 } else if ( tpl[j+2] === '+' ) {
                     res.push( tpl.substring(i, j) );
-                    
+
                     t = tpl.indexOf('%>', i) ;
 
                     key = this.trim(tpl.substring(j+3, t)) ;
 
                     j = tpl.indexOf('<%- ' + key + ' %>', t);
-                    
+
                     if ( j === -1 ) {
                         throw new Error ('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
                     }
@@ -255,14 +255,14 @@
             Function: list
 
             Go through an array
-    
-            
+
+
 
             Parameters:
                 tpl {String} Template to apply to each element of the list
                 data {Object} Data source
-            
-                
+
+
             Return:
             {String} Result of template list compilation
         */
@@ -282,15 +282,15 @@
 
         /*
             Function: evaluate a tag
-            
+
             Evaluation of a tag (<% ... %>)
-    
-            
+
+
             Parameters:
                 element {String} Element to evaluate, without
                 data {Object|String} Data source
-            
-                
+
+
             Return:
             {String} Result of evaluation
         */
@@ -299,7 +299,7 @@
             if ( !data ) {
                 data = this.dat;
             }
-            
+
             var o = element.substring(0,1),
                 s2 = this.trim(element.substring(1)) ;
 
@@ -334,11 +334,11 @@
             Function: addElements
 
             Add many template elements
-    
+
             Parameters:
                 elements {object} Key/value elements object
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -358,12 +358,12 @@
             Function: addElement
 
             Add a template element
-    
+
             Parameters:
                 id {string} Id of element
                 element {string} Template for element
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -379,11 +379,11 @@
             Function: remElement
 
             Remove a template element
-    
+
             Parameters:
                 id {string} Id of element
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -399,8 +399,8 @@
             Function: remElements
 
             Remove all elements
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -413,12 +413,12 @@
 
         /*
             Function: evaluateElement
-    
+
             Evaluate an element with given data
 
             Parameters:
                 data {Object|String} Data source
-            
+
             Return:
             {String} Result of evaluation
         */
@@ -433,12 +433,12 @@
             Function: addVariable
 
             Add some data in the data object (may be a variable, a function)
-    
+
             Parameters:
                 key {string} Id of variable
                 value {string} Value of variable
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -453,11 +453,11 @@
             Function: remVariable
 
             Remove some data in the data object
-    
+
             Parameters:
                 key {string} Id of variable
-            
-                
+
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -472,7 +472,7 @@
             Function: resetDataObject
 
             Remove everything in the data object
-                
+
             Return:
             {Beard} Current instance for chained command
         */
@@ -484,14 +484,14 @@
         },
         /*
             Compile a function call
-    
+
             Function: func
 
             Parameters:
                 data {Object} Data source
                 str {String} Function string to compile
-            
-                
+
+
             Return:
             {String} Result of compilatio,
         */
@@ -542,13 +542,13 @@
 
         /*
             Evaluate a function argument
-    
+
             Function: arg
 
             Parameters:
                 arg {String} Argument to evaluate
-            
-                
+
+
             Return:
             {mixed} Evaluation of the argument
     */
@@ -558,7 +558,7 @@
             {
                 return '';
             }
-            
+
             if ( arg === 'true' ) {
                 return true ;
             }
@@ -586,21 +586,21 @@
             Function: key
 
             Get a nested variable reference
-    
+
             In case the parent is required, the method will return a such object:
-            
+
                 {
                     ref: theReference,
                     parent: theParentObject
                 }
-            
+
 
             Parameters:
                 data {Object} Data source
                 key {String} Key to retrieve
                 [parent=false] {Boolean} Do retrieve parent as well
-            
-                
+
+
             Return:
             Variable value if found, with parent if required, undefined otherwise
         */
@@ -651,12 +651,12 @@
             Function: trim
 
             Trim a string
-    
+
 
             Parameters:
                 str {String} String to trim
                 token {String} [token=\s] String to trim
-                
+
             Return:
             {String} Trimed string
         */
