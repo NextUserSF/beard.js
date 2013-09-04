@@ -4,7 +4,8 @@ NODE_MODULES_BIN = $(NODE_MODULES)/.bin
 BOWER            = $(NODE_MODULES_BIN)/bower
 JSLINT           = $(NODE_MODULES_BIN)/jslint
 PHANTOMJS        = $(NODE_MODULES_BIN)/phantomjs
-TEST_RUNNER      = $(CURDIR)/spec/runner.phantom.js
+SPEC             = $(CURDIR)/spec
+TEST_RUNNER      = $(SPEC)/runner.phantom.js
 UGLIFYJS         = $(NODE_MODULES_BIN)/uglifyjs
 UGLIFYJS_ARGS    = -c -m # see https://github.com/mishoo/UglifyJS2#usage for details
 
@@ -29,12 +30,11 @@ $(DEST): $(SRC)
 $(NODE_MODULES): package.json
 	@npm install
 
-test: .test
+test: lib $(BOWER_COMPONENTS)
+	@cd $(SPEC); ${MAKE} || exit; cd ..
+	@$(PHANTOMJS) $(TEST_RUNNER)
 
-.test: lib $(BOWER_COMPONENTS)
-	@$(PHANTOMJS) $(TEST_RUNNER) && touch $@
-
-$(BOWER_COMPONENTS): bower.json $(NODE_MODULES)
+$(BOWER_COMPONENTS): bower.json | $(NODE_MODULES)
 	@$(BOWER) install
 
 clean:
@@ -42,6 +42,5 @@ clean:
 	@rm -rf $(NODE_MODULES)
 	@rm -rf $(BOWER_COMPONENTS)
 	@rm -ff .lint
-	@rm -rf .test
 
 .PHONY: all clean lib lint test
