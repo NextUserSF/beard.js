@@ -1,13 +1,12 @@
-/*jslint browser: true, forin: true, white: true, nomen: true, plusplus: true*/
-
+/*jslint browser: true*/
 /*
     Package: Beard.js
  */
-(function( global ){
+(function (global) {
 
     "use strict";
 
-    var Beard ;
+    var Beard;
 
     /*
        Constructor: Beard
@@ -17,11 +16,11 @@
             data {Object} [] Data
             elements {Object} [] Elements
     */
-    (Beard = function( tpl , data, elements ) {
-        this.tpl = tpl || '' ;
-        this.dat = data || {} ;
-        this.UDEF = undefined ;
-        this.elements = elements || {} ;
+    (Beard = function (tpl, data, elements) {
+        this.tpl = tpl || '';
+        this.dat = data || {};
+        this.UDEF = undefined;
+        this.elements = elements || {};
     }).prototype = {
 
         /*
@@ -36,11 +35,10 @@
             Return:
             {Beard} Current instance for chained command on this element
         */
-        set: function ( tpl )
-        {
-            this.tpl = tpl || '' ;
+        set: function (tpl) {
+            this.tpl = tpl || '';
 
-            return this ;
+            return this;
         },
 
         /*
@@ -53,9 +51,8 @@
             Return:
             {String} The template as string
         */
-        get: function ()
-        {
-            return this.tpl ;
+        get: function () {
+            return this.tpl;
         },
 
         /*
@@ -71,14 +68,12 @@
             Return:
             {String} Compilated template
         */
-        render: function ( data )
-        {
-            if ( data )
-            {
-                this.dat = data ;
+        render: function (data) {
+            if (data) {
+                this.dat = data;
             }
 
-            return this.compile ( this.tpl , this.dat ) ;
+            return this.compile(this.tpl, this.dat);
         },
         /*
             Function: getRequired
@@ -105,72 +100,69 @@
             Return:
             {Object} On object containing arrays of required elements and variables
         */
-        getRequired: function ( tpl )
-        {
+        getRequired: function (tpl) {
             tpl = tpl || this.tpl;
             var i = 0,
-                j = -1 ,
+                j = -1,
                 res = {
                     elements: [],
                     variables: []
-                } ,
+                },
                 t,
                 o,
                 s2,
                 key,
                 sub,
-                l = tpl.length ;
+                l = tpl.length;
 
-            while (i < l)
-            {
-                j = tpl.indexOf('<%', i) ;
+            while (i < l) {
+                j = tpl.indexOf('<%', i);
 
                 if (j === -1) {
                     break;
-                } else if ( tpl[j+2] === '+' ) {
-                    t = tpl.indexOf('%>', i) ;
-                    key = this.trim(tpl.substring(j+3, t)) ;
+                } else if (tpl[j + 2] === '+') {
+                    t = tpl.indexOf('%>', i);
+                    key = this.trim(tpl.substring(j + 3, t));
                     j = tpl.indexOf('<%- ' + key + ' %>', t);
 
-                    if ( j === -1 ) {
-                        throw new Error ('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
+                    if (j === -1) {
+                        throw new Error('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
                     }
 
                     res.variables.push(key);
-                    i = j + String('<%- ' + key + ' %>').length ;
+                    i = j + String('<%- ' + key + ' %>').length;
                 } else {
 
                     i = j;
                     j = tpl.indexOf('%>', i);
 
                     if (j === -1) {
-                        throw new Error ('Missing "%>" at end of template / ' + tpl.substring(i));
+                        throw new Error('Missing "%>" at end of template / ' + tpl.substring(i));
                     }
 
                     sub = this.trim(tpl.substring(i + 2, j));
 
-                    o = sub.substring(0,1);
-                    s2 = this.trim(sub.substring(1)) ;
+                    o = sub.substring(0, 1);
+                    s2 = this.trim(sub.substring(1));
 
                     if (s2.indexOf(' ') > -1) {
                         s2 = s2.split(' ')[0];
                     }
 
-                    switch(o)
-                    {
-                        case '=':
-                            res.variables.push(s2) ;
-                            break;
-                        case '@':
-                            res.elements.push(s2) ;
-                            break;
+                    switch (o) {
+                    case '=':
+                        res.variables.push(s2);
+                        break;
+                    case '@':
+                        res.elements.push(s2);
+                        break;
                     }
 
                     i = j + 2;
                 }
             }
 
-            return res ;
+            return res;
         },
 
         /*
@@ -187,50 +179,48 @@
             Return:
             {String} Result of template compilation
         */
-        compile: function ( tpl, data )
-        {
+        compile: function (tpl, data) {
             var i = 0,
-            j = -1 ,
-            res = [] ,
-            t,
-            key,
-            sub,
-            l = tpl.length ;
+                j = -1,
+                res = [],
+                t,
+                key,
+                sub,
+                l = tpl.length;
 
-            while (i < l)
-            {
-                j = tpl.indexOf('<%', i) ;
+            while (i < l) {
+                j = tpl.indexOf('<%', i);
 
                 // Nothing else
                 if (j === -1) {
-                    res.push( tpl.substr(i) );
+                    res.push(tpl.substr(i));
 
                     break;
 
                 // Go through
-                } else if ( tpl[j+2] === '+' ) {
-                    res.push( tpl.substring(i, j) );
+                } else if (tpl[j + 2] === '+') {
+                    res.push(tpl.substring(i, j));
 
-                    t = tpl.indexOf('%>', i) ;
+                    t = tpl.indexOf('%>', i);
 
-                    key = this.trim(tpl.substring(j+3, t)) ;
+                    key = this.trim(tpl.substring(j + 3, t));
 
                     j = tpl.indexOf('<%- ' + key + ' %>', t);
 
-                    if ( j === -1 ) {
-                        throw new Error ('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
+                    if (j === -1) {
+                        throw new Error('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
                     }
 
-                    sub = tpl.substring( t + 2, j );
+                    sub = tpl.substring(t + 2, j);
 
-                    res.push( this.list( sub, this.key(data, key)) ) ;
+                    res.push(this.list(sub, this.key(data, key)));
 
-                    i = j + String('<%- ' + key + ' %>').length ;
+                    i = j + String('<%- ' + key + ' %>').length;
 
                 // Basic
                 } else {
 
-                    res.push( tpl.substring(i, j) );
+                    res.push(tpl.substring(i, j));
 
                     i = j;
 
@@ -238,17 +228,17 @@
                     j = tpl.indexOf('%>', i);
 
                     if (j === -1) {
-                        throw new Error ('Missing "%>" at end of template / ' + tpl.substring(i));
+                        throw new Error('Missing "%>" at end of template / ' + tpl.substring(i));
                     }
 
-                    res.push( this.evaluate( this.trim(tpl.substring(i + 2, j)) , data) );
+                    res.push(this.evaluate(this.trim(tpl.substring(i + 2, j)), data));
 
                     i = j + 2;
 
                 }
             }
 
-            return res.join('') ;
+            return res.join('');
         },
 
         /*
@@ -266,15 +256,13 @@
             Return:
             {String} Result of template list compilation
         */
-        list: function ( tpl, data )
-        {
+        list: function (tpl, data) {
             var i = 0,
-            str = '',
-            l = data && data.length > 0 ? data.length : 0 ;
+                str = '',
+                l = data && data.length > 0 ? data.length : 0;
 
-            for ( i ; i < l ; i += 1 )
-            {
-                str += this.compile(tpl, data[i]) ;
+            for (i; i < l; i += 1) {
+                str += this.compile(tpl, data[i]);
             }
 
             return str;
@@ -294,39 +282,37 @@
             Return:
             {String} Result of evaluation
         */
-        evaluate: function ( element, data )
-        {
-            if ( !data ) {
+        evaluate: function (element, data) {
+            if (!data) {
                 data = this.dat;
             }
 
-            var o = element.substring(0,1),
-                s2 = this.trim(element.substring(1)) ;
+            var o = element.substring(0, 1),
+                s2 = this.trim(element.substring(1));
 
-            switch(o)
-            {
-                case '#':
-                    return '' ;
-                // Sorry for this line
-                case '=':
-                    return String ( s2.indexOf('(') > - 1 ? this.func(data, s2)
+            switch (o) {
+            case '#':
+                return '';
+            // Sorry for this line
+            case '=':
+                return String(s2.indexOf('(') > -1 ? this.func(data, s2)
                         : (s2.indexOf('.') > -1 ? this.key(data, s2)
-                            : s2 === '$' ? data : this.evaluateVariable( s2 , data) ) ) ;
-                case '@':
-                    return this.evaluateElement(s2, this.dat) ;
+                            : s2 === '$' ? data : this.evaluateVariable(s2, data)));
+            case '@':
+                return this.evaluateElement(s2, this.dat);
             }
 
-            return element ;
+            return element;
         },
 
-        evaluateVariable: function ( variable, data ) {
-            var split = variable.indexOf('|') > -1 ? variable.split('|') : [variable] ,
-                l = split.length ,
-                def = l === 2 ? this.trim(split[1]) : '' ;
+        evaluateVariable: function (variable, data) {
+            var split = variable.indexOf('|') > -1 ? variable.split('|') : [variable],
+                l = split.length,
+                def = l === 2 ? this.trim(split[1]) : '';
 
-            variable = l === 2 ? this.trim(split[0]) : variable ;
+            variable = l === 2 ? this.trim(split[0]) : variable;
 
-            return !!data[variable] ? data[variable] : def ;
+            return !!data[variable] ? data[variable] : def;
         },
 
 
@@ -342,12 +328,13 @@
             Return:
             {Beard} Current instance for chained command
         */
-        addElements: function ( elements )
-        {
+        addElements: function (elements) {
             var k;
 
-            for ( k in elements ) {
-                this.elements[k] = elements[k] ;
+            for (k in elements) {
+                if (elements.hasOwnProperty(k)) {
+                    this.elements[k] = elements[k];
+                }
             }
 
             return this;
@@ -367,9 +354,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        addElement: function ( id, element )
-        {
-            this.elements[id] = element ;
+        addElement: function (id, element) {
+            this.elements[id] = element;
 
             return this;
         },
@@ -387,9 +373,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        remElement: function ( id )
-        {
-            this.elements[id] = null ;
+        remElement: function (id) {
+            this.elements[id] = null;
 
             return this;
         },
@@ -404,9 +389,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        remElements: function ( )
-        {
-            this.elements = {} ;
+        remElements: function () {
+            this.elements = {};
 
             return this;
         },
@@ -422,9 +406,8 @@
             Return:
             {String} Result of evaluation
         */
-        evaluateElement: function ( element, data )
-        {
-            return this.compile (this.elements[element] || '<% Element '+ element + ' not found %>' , data );
+        evaluateElement: function (element, data) {
+            return this.compile(this.elements[element] || '<% Element ' + element + ' not found %>', data);
         },
 
 
@@ -442,9 +425,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        addVariable: function ( key, value )
-        {
-            this.dat[key] = value ;
+        addVariable: function (key, value) {
+            this.dat[key] = value;
 
             return this;
         },
@@ -461,9 +443,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        remVariable: function ( key )
-        {
-            this.dat[key] = null ;
+        remVariable: function (key) {
+            this.dat[key] = null;
 
             return this;
         },
@@ -476,9 +457,8 @@
             Return:
             {Beard} Current instance for chained command
         */
-        resetDataObject: function ( key )
-        {
-            this.dat = {} ;
+        resetDataObject: function (key) {
+            this.dat = {};
 
             return this;
         },
@@ -495,49 +475,46 @@
             Return:
             {String} Result of compilatio,
         */
-        func: function ( data, str )
-        {
-
+        func: function (data, str) {
             var f,
                 args,
                 p,
                 i = 0,
                 l,
                 arr = [],
-                clean = [] ;
+                clean = [];
 
-            str = str.split('(') ;
-            args = this.trim(this.trim(str[1]),'\\)') ;
+            str = str.split('(');
+            args = this.trim(this.trim(str[1]), '\\)');
 
-            f = this.trim(str [0]) ;
+            f = this.trim(str[0]);
 
-            if ( f.indexOf('.') > -1 ) {
-                f = this.key(data, f, true) ;
-                p = f.parent ;
-                f = f.ref ;
+            if (f.indexOf('.') > -1) {
+                f = this.key(data, f, true);
+                p = f.parent;
+                f = f.ref;
             } else {
-                f = data[f] ;
-                p = data ;
+                f = data[f];
+                p = data;
             }
 
-            if ( !f ) {
-                return this.UDEF ;
+            if (!f) {
+                return this.UDEF;
             }
 
-            if ( args === '' )
-            {
-                return f.apply (p) ;
+            if (args === '') {
+                return f.apply(p);
             }
 
 
-            args = args.split(',') ;
+            args = args.split(',');
             l = args.length;
 
-            for ( i ; i < l ; i += 1 )
-            {
-                clean.push(this.arg(this.trim(args[i]))) ;
+            for (i; i < l; i += 1) {
+                clean.push(this.arg(this.trim(args[i])));
             }
-            return f.apply (p, clean) ;
+
+            return f.apply(p, clean);
         },
 
         /*
@@ -552,31 +529,29 @@
             Return:
             {mixed} Evaluation of the argument
     */
-        arg: function ( arg )
-        {
-            if ( arg === '' )
-            {
+        arg: function (arg) {
+            if (arg === '') {
                 return '';
             }
 
-            if ( arg === 'true' ) {
-                return true ;
+            if (arg === 'true') {
+                return true;
             }
 
-            if ( arg === 'false' ) {
-                return false ;
+            if (arg === 'false') {
+                return false;
             }
 
-            if ( arg === 'null' ) {
-                return null ;
+            if (arg === 'null') {
+                return null;
             }
 
-            if ( arg === 'undefined' ) {
-                return this.UDEF ;
+            if (arg === 'undefined') {
+                return this.UDEF;
             }
 
-            if ( !isNaN(arg) ) {
-                return (arg.indexOf('.') > -1 ? parseFloat(arg, 10) : parseInt(arg, 10)) ;
+            if (!isNaN(arg)) {
+                return (arg.indexOf('.') > -1 ? parseFloat(arg, 10) : parseInt(arg, 10));
             }
 
             return arg;
@@ -604,47 +579,42 @@
             Return:
             Variable value if found, with parent if required, undefined otherwise
         */
-        key: function ( data , key , parent )
-        {
+        key: function (data, key, parent) {
 
-            var a = key.split('.') ,
-            p,
-            o = data ,
-            l = a.length ,
-            i = 0 ;
+            var a = key.split('.'),
+                p,
+                o = data,
+                l = a.length,
+                i = 0;
 
-            for ( i ; i < l ; i += 1 )
-            {
-                if ( a[i] === '$' ) {
+            for (i; i < l; i += 1) {
+                if (a[i] === '$') {
                     i += 1;
                 }
 
-                if ( !isNaN(a[i]) )
-                {
-                    a[i] = parseInt(a[i], 10) ;
+                if (!isNaN(a[i])) {
+                    a[i] = parseInt(a[i], 10);
                 }
 
-                if (o && null !== o[a[i]])
-                {
-                    p = o ;
-                    o = o[a[i]] ;
+                if (o && null !== o[a[i]]) {
+                    p = o;
+                    o = o[a[i]];
                 } else {
-                    if ( parent )
-                    {
-                        return {ref: undefined, parent: undefined} ;
+                    if (parent) {
+                        return {ref: undefined, parent: undefined};
                     }
-                    return this.UDEF ;
+                    return this.UDEF;
                 }
             }
 
-            if ( parent ) {
+            if (parent) {
                 return {
                     ref: o,
                     parent: p
-                } ;
+                };
             }
 
-            return o ;
+            return o;
         },
 
         /*
@@ -660,11 +630,9 @@
             Return:
             {String} Trimed string
         */
-        trim: function ( str , token )
-        {
-            if ( token )
-            {
-                return str.replace(new RegExp('^'+token+'*'), '').replace(new RegExp(token+'*$'), '');
+        trim: function (str, token) {
+            if (token) {
+                return str.replace(new RegExp('^' + token + '*'), '').replace(new RegExp(token + '*$'), '');
             }
 
             return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
@@ -673,7 +641,6 @@
 
     };
 
-    global.Beard = Beard ;
+    global.Beard = Beard;
 
-
-} ( window ) ) ;
+}(window));
