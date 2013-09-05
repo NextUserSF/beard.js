@@ -1,6 +1,7 @@
 describe 'Compile', ->
   tpl = null
   tplStr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %>'
+  tplStrErr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %>'
   data =
     v1: 'v1'
     v2: 'v2'
@@ -35,7 +36,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'e1 e2 e3   '
+      expect(ret).toEqual 'e1 e2 e3'
 
   describe 'Variables, no Elements and Template', ->
     beforeEach ->
@@ -55,7 +56,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'Element e1 not found Element e2 not found Element e3 not found   '
+      expect(ret).toEqual 'Element e1 not found Element e2 not found Element e3 not found'
 
   describe 'Variables, Elements, no Template', ->
     beforeEach ->
@@ -67,3 +68,14 @@ describe 'Compile', ->
 
     it 'should return correct compiled template', ->
       expect(ret).toEqual ''
+
+  describe 'Invalid template', ->
+    beforeEach ->
+      tpl.addElements elements
+      ret = tpl.compile tplStrErr, data
+
+    it 'should have been called', ->
+      expect(tpl.compile).toHaveBeenCalled()
+
+    it 'should throw error', ->
+      expect(tpl.compile).toThrow()

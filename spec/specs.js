@@ -431,9 +431,10 @@
   });
 
   describe('Compile', function() {
-    var data, elements, ret, tpl, tplStr;
+    var data, elements, ret, tpl, tplStr, tplStrErr;
     tpl = null;
     tplStr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %>';
+    tplStrErr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %>';
     data = {
       v1: 'v1',
       v2: 'v2',
@@ -470,7 +471,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('e1 e2 e3   ');
+        return expect(ret).toEqual('e1 e2 e3');
       });
     });
     describe('Variables, no Elements and Template', function() {
@@ -492,10 +493,10 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('Element e1 not found Element e2 not found Element e3 not found   ');
+        return expect(ret).toEqual('Element e1 not found Element e2 not found Element e3 not found');
       });
     });
-    return describe('Variables, Elements, no Template', function() {
+    describe('Variables, Elements, no Template', function() {
       beforeEach(function() {
         tpl.addElements(elements);
         return ret = tpl.compile('', data);
@@ -505,6 +506,301 @@
       });
       return it('should return correct compiled template', function() {
         return expect(ret).toEqual('');
+      });
+    });
+    return describe('Invalid template', function() {
+      beforeEach(function() {
+        tpl.addElements(elements);
+        return ret = tpl.compile(tplStrErr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.compile).toHaveBeenCalled();
+      });
+      return it('should throw error', function() {
+        return expect(tpl.compile).toThrow();
+      });
+    });
+  });
+
+  describe('List', function() {
+    var data, ret, tpl, tplStr;
+    tpl = null;
+    tplStr = 'Hello <%= v1 %> <%= v2 %> <%= v3 %> world';
+    data = [
+      {
+        v1: 'v1'
+      }, {
+        v2: 'v2'
+      }, {
+        v3: 'v3'
+      }
+    ];
+    ret = null;
+    beforeEach(function() {
+      tpl = new Beard();
+      spyOn(tpl, 'list').andCallThrough();
+      return ret = tpl.list(tplStr, data);
+    });
+    it('should have been called', function() {
+      return expect(tpl.list).toHaveBeenCalled();
+    });
+    return it('should return correct compiled template', function() {
+      return expect(ret).toEqual('Hello v1 v2 v3 world');
+    });
+  });
+
+  describe('Evaluate', function() {
+    var commentStr, data, elementStr, elements, funcStr, keyStr, ret, str, tpl, variableStr;
+    tpl = null;
+    ret = null;
+    commentStr = '# comment';
+    funcStr = '= func()';
+    keyStr = '= test.key';
+    variableStr = '= variable';
+    elementStr = '@ element';
+    str = 'Not an element';
+    data = {
+      func: function() {
+        return 'Function call';
+      },
+      test: {
+        key: 'Test key'
+      },
+      variable: 'Test variable'
+    };
+    elements = {
+      element: 'Test element'
+    };
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'evaluate').andCallThrough();
+    });
+    describe('Comment', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluate(commentStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      return it('should return an empty string', function() {
+        return expect(ret).toEqual('');
+      });
+    });
+    describe('Function', function() {
+      beforeEach(function() {
+        spyOn(data, 'func').andCallThrough();
+        return ret = tpl.evaluate(funcStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      it('function should have been called', function() {
+        return expect(data.func).toHaveBeenCalled();
+      });
+      return it('should return the result of the call', function() {
+        return expect(ret).toEqual('Function call');
+      });
+    });
+    describe('Key', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluate(keyStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      return it('should return the correct value', function() {
+        return expect(ret).toEqual('Test key');
+      });
+    });
+    describe('Variable', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluate(variableStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      return it('should return the correct value', function() {
+        return expect(ret).toEqual('Test variable');
+      });
+    });
+    describe('Element', function() {
+      beforeEach(function() {
+        tpl.addElements(elements);
+        spyOn(tpl, 'evaluateElement').andCallThrough();
+        return ret = tpl.evaluate(elementStr);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      it('should call evaluateElement method', function() {
+        return expect(tpl.evaluateElement).toHaveBeenCalled();
+      });
+      return it('should return the correct value', function() {
+        return expect(ret).toEqual('Test element');
+      });
+    });
+    return describe('Not a parseable element', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluate(str);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluate).toHaveBeenCalled();
+      });
+      return it('should return the string unchanged', function() {
+        return expect(ret).toEqual('Not an element');
+      });
+    });
+  });
+
+  describe('Evaluate Variable', function() {
+    var data, noVarDefStr, noVarStr, ret, tpl, varDefStr, varStr;
+    tpl = null;
+    ret = null;
+    varStr = 'v1';
+    varDefStr = 'v1 | Default value';
+    noVarStr = 'x1';
+    noVarDefStr = 'x1 | Default value';
+    data = {
+      v1: 'v1'
+    };
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'evaluateVariable').andCallThrough();
+    });
+    describe('Existing Variable without Default', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluateVariable(varStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluateVariable).toHaveBeenCalled();
+      });
+      return it('should return variable\'s value', function() {
+        return expect(ret).toEqual('v1');
+      });
+    });
+    describe('Existing Variable with Default', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluateVariable(varDefStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluateVariable).toHaveBeenCalled();
+      });
+      return it('should return variable\'s value', function() {
+        return expect(ret).toEqual('v1');
+      });
+    });
+    describe('Inexisting Variable without Default', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluateVariable(noVarStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluateVariable).toHaveBeenCalled();
+      });
+      return it('should return an empty string', function() {
+        return expect(ret).toEqual('');
+      });
+    });
+    return describe('Inexisting Variable with Default', function() {
+      beforeEach(function() {
+        return ret = tpl.evaluateVariable(noVarDefStr, data);
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluateVariable).toHaveBeenCalled();
+      });
+      return it('should return the default value', function() {
+        return expect(ret).toEqual('Default value');
+      });
+    });
+  });
+
+  describe('Add Elements', function() {
+    var elements, ret, tpl;
+    tpl = null;
+    ret = null;
+    elements = {
+      e1: 'e1',
+      e2: 'e2',
+      e3: 'e3'
+    };
+    beforeEach(function() {
+      tpl = new Beard();
+      spyOn(tpl, 'addElements').andCallThrough();
+      return ret = tpl.addElements(elements);
+    });
+    it('should have been called', function() {
+      return expect(tpl.addElements).toHaveBeenCalled();
+    });
+    it('should return the current instance', function() {
+      return expect(ret).toEqual(tpl);
+    });
+    it('should add correct first element', function() {
+      return expect(ret.elements.e1).toEqual('e1');
+    });
+    it('should add correct second element', function() {
+      return expect(ret.elements.e2).toEqual('e2');
+    });
+    return it('should add correct third element', function() {
+      return expect(ret.elements.e3).toEqual('e3');
+    });
+  });
+
+  describe('Add Element', function() {
+    var element, id, ret, tpl;
+    tpl = null;
+    ret = null;
+    id = 'e1';
+    element = 'element';
+    beforeEach(function() {
+      tpl = new Beard();
+      spyOn(tpl, 'addElement').andCallThrough();
+      return ret = tpl.addElement(id, element);
+    });
+    it('should have been called', function() {
+      return expect(tpl.addElement).toHaveBeenCalled();
+    });
+    it('should return the current instance', function() {
+      return expect(ret).toEqual(tpl);
+    });
+    it('should add element', function() {
+      return expect(ret.elements.e1).toBeDefined();
+    });
+    return it('should add element with correct value', function() {
+      return expect(ret.elements.e1).toEqual('element');
+    });
+  });
+
+  describe('Remove Element', function() {
+    var elements, ret, tpl;
+    tpl = null;
+    ret = null;
+    elements = {
+      e1: 'e1',
+      e2: 'e2'
+    };
+    beforeEach(function() {
+      tpl = new Beard('', {}, elements);
+      return spyOn(tpl, 'remElement').andCallThrough();
+    });
+    describe('Before', function() {
+      return it('element should exist', function() {
+        return expect(tpl.elements.e1).toBeDefined();
+      });
+    });
+    return describe('After', function() {
+      beforeEach(function() {
+        return ret = tpl.remElement('e1');
+      });
+      it('should have been called', function() {
+        return expect(tpl.remElement).toHaveBeenCalled();
+      });
+      it('should return the current object instance', function() {
+        return expect(ret).toEqual(tpl);
+      });
+      it('element shouldn\'t exist', function() {
+        return expect(tpl.elements.e1).toBeUndefined();
+      });
+      return it('unremoved element should exist', function() {
+        return expect(tpl.elements.e2).toBeDefined();
       });
     });
   });
