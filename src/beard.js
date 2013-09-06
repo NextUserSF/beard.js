@@ -457,7 +457,7 @@
             Return:
             {Beard} Current instance for chained command
         */
-        resetDataObject: function (key) {
+        resetDataObject: function () {
             this.dat = {};
 
             return this;
