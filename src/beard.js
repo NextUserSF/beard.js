@@ -481,7 +481,6 @@
                 p,
                 i = 0,
                 l,
-                arr = [],
                 clean = [];
 
             str = str.split('(');
