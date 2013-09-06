@@ -19,7 +19,7 @@ all: $(NODE_MODULES) lib
 lint: .lint
 
 .lint: $(SRC)
-	@$(JSLINT) $(wildcard $(SRC)) && touch $@
+	@$(JSLINT) $(wildcard $(SRC)) >/dev/null && touch $@
 
 lib: lint $(DEST)
 
