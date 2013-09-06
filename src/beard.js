@@ -374,7 +374,7 @@
             {Beard} Current instance for chained command
         */
         remElement: function (id) {
-            this.elements[id] = null;
+            delete this.elements[id];
 
             return this;
         },
