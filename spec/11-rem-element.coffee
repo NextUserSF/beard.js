@@ -21,7 +21,7 @@ describe 'Remove Element', ->
       expect(tpl.remElement).toHaveBeenCalled()
 
     it 'should return the current object instance', ->
-      expect(ret).toEqual tpl
+      expect(ret).toBe tpl
 
     it 'element shouldn\'t exist', ->
       expect(tpl.elements.e1).toBeUndefined()

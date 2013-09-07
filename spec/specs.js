@@ -38,7 +38,7 @@
         return expect(tpl.set).toHaveBeenCalledWith('<b>Hello world!</b>');
       });
       return it('should return current instance', function() {
-        return expect(ret).toEqual(tpl);
+        return expect(ret).toBe(tpl);
       });
     });
     describe('Set (empty)', function() {
@@ -56,7 +56,7 @@
         return expect(tpl.set).toHaveBeenCalledWith();
       });
       return it('should return current instance', function() {
-        return expect(ret).toEqual(tpl);
+        return expect(ret).toBe(tpl);
       });
     });
     describe('Get', function() {
@@ -433,8 +433,8 @@
   describe('Compile', function() {
     var data, elements, ret, tpl, tplStr, tplStrErr;
     tpl = null;
-    tplStr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %>';
-    tplStrErr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %>';
+    tplStr = 'Hello <%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %> world';
+    tplStrErr = 'Hello <%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %> world';
     data = {
       v1: 'v1',
       v2: 'v2',
@@ -459,7 +459,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('e1 e2 e3 v1 v2 v3');
+        return expect(ret).toEqual('Hello e1 e2 e3 v1 v2 v3 world');
       });
     });
     describe('Elements, no Variables and Template', function() {
@@ -471,7 +471,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('e1 e2 e3');
+        return expect(ret).toEqual('Hello e1 e2 e3 world');
       });
     });
     describe('Variables, no Elements and Template', function() {
@@ -482,7 +482,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('Element e1 not found Element e2 not found Element e3 not found v1 v2 v3');
+        return expect(ret).toEqual('Hello Element e1 not found Element e2 not found Element e3 not found v1 v2 v3 world');
       });
     });
     describe('Template, no Variables and no Elements', function() {
@@ -731,7 +731,7 @@
       return expect(tpl.addElements).toHaveBeenCalled();
     });
     it('should return the current instance', function() {
-      return expect(ret).toEqual(tpl);
+      return expect(ret).toBe(tpl);
     });
     it('should add correct first element', function() {
       return expect(ret.elements.e1).toEqual('e1');
@@ -759,7 +759,7 @@
       return expect(tpl.addElement).toHaveBeenCalled();
     });
     it('should return the current instance', function() {
-      return expect(ret).toEqual(tpl);
+      return expect(ret).toBe(tpl);
     });
     it('should add element', function() {
       return expect(ret.elements.e1).toBeDefined();
@@ -794,13 +794,95 @@
         return expect(tpl.remElement).toHaveBeenCalled();
       });
       it('should return the current object instance', function() {
-        return expect(ret).toEqual(tpl);
+        return expect(ret).toBe(tpl);
       });
       it('element shouldn\'t exist', function() {
         return expect(tpl.elements.e1).toBeUndefined();
       });
       return it('unremoved element should exist', function() {
         return expect(tpl.elements.e2).toBeDefined();
+      });
+    });
+  });
+
+  describe('Remove all Elements', function() {
+    var elements, ret, tpl;
+    tpl = null;
+    ret = null;
+    elements = {
+      e1: 'e1',
+      e2: 'e2'
+    };
+    beforeEach(function() {
+      tpl = new Beard('', {}, elements);
+      spyOn(tpl, 'remElements').andCallThrough();
+      return ret = tpl.remElements();
+    });
+    it('should have been called', function() {
+      return expect(tpl.remElements).toHaveBeenCalled();
+    });
+    it('should return the current object instance', function() {
+      return expect(ret).toBe(tpl);
+    });
+    return it('should have empty elements', function() {
+      return expect(tpl.elements).toEqual({});
+    });
+  });
+
+  describe('Evaluate Element', function() {
+    var data, elements, ret, tpl;
+    tpl = null;
+    ret = null;
+    elements = {
+      e1: 'e1',
+      e2: 'Hello <%= v1 %> world'
+    };
+    data = {
+      v1: 'v1',
+      v2: 'v2'
+    };
+    beforeEach(function() {
+      tpl = new Beard;
+      return spyOn(tpl, 'evaluateElement').andCallThrough();
+    });
+    describe('Plain Elements', function() {
+      beforeEach(function() {
+        tpl.addElements(elements);
+        return ret = tpl.evaluateElement('e1');
+      });
+      it('should have been called', function() {
+        return expect(tpl.evaluateElement).toHaveBeenCalled();
+      });
+      return it('should return the correct value', function() {
+        return expect(ret).toEqual('e1');
+      });
+    });
+    return describe('Elements with', function() {
+      describe('Object\'s variables', function() {
+        beforeEach(function() {
+          tpl = new Beard('', data, elements);
+          spyOn(tpl, 'evaluateElement').andCallThrough();
+          return ret = tpl.evaluateElement('e2');
+        });
+        it('should have been called', function() {
+          return expect(tpl.evaluateElement).toHaveBeenCalled();
+        });
+        return it('should return the correct value', function() {
+          return expect(ret).toEqual('Hello v1 world');
+        });
+      });
+      return describe('Passed variables', function() {
+        beforeEach(function() {
+          tpl = new Beard('', {}, elements);
+          spyOn(tpl, 'evaluateElement').andCallThrough();
+          return ret = tpl.evaluateElement('e2', data);
+        });
+        it('should have been called', function() {
+          return expect(tpl.evaluateElement).toHaveBeenCalled();
+        });
+        return it('should return the correct value', function() {
+          return expect(ret).toEqual('Hello v1 world');
+        });
       });
     });
   });

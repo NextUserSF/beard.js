@@ -1,7 +1,7 @@
 describe 'Compile', ->
   tpl = null
-  tplStr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %>'
-  tplStrErr = '<%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %>'
+  tplStr = 'Hello <%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 %> <%= v2 %> <%= v3 %> world'
+  tplStrErr = 'Hello <%@ e1 %> <%@ e2 %> <%@ e3 %> <%= v1 <%= v2 %> <%= v3 %> world'
   data =
     v1: 'v1'
     v2: 'v2'
@@ -25,7 +25,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'e1 e2 e3 v1 v2 v3'
+      expect(ret).toEqual 'Hello e1 e2 e3 v1 v2 v3 world'
 
   describe 'Elements, no Variables and Template', ->
     beforeEach ->
@@ -36,7 +36,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'e1 e2 e3'
+      expect(ret).toEqual 'Hello e1 e2 e3 world'
 
   describe 'Variables, no Elements and Template', ->
     beforeEach ->
@@ -46,7 +46,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'Element e1 not found Element e2 not found Element e3 not found v1 v2 v3'
+      expect(ret).toEqual 'Hello Element e1 not found Element e2 not found Element e3 not found v1 v2 v3 world'
 
   describe 'Template, no Variables and no Elements', ->
     beforeEach ->

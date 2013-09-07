@@ -13,7 +13,7 @@ describe 'Add Element', ->
     expect(tpl.addElement).toHaveBeenCalled()
 
   it 'should return the current instance', ->
-    expect(ret).toEqual tpl
+    expect(ret).toBe tpl
 
   it 'should add element', ->
     expect(ret.elements.e1).toBeDefined()

@@ -21,7 +21,7 @@ describe 'Template', ->
       expect(tpl.set).toHaveBeenCalledWith '<b>Hello world!</b>'
 
     it 'should return current instance', ->
-      expect(ret).toEqual tpl
+      expect(ret).toBe tpl
 
   describe 'Set (empty)', ->
     beforeEach ->
@@ -38,7 +38,7 @@ describe 'Template', ->
       expect(tpl.set).toHaveBeenCalledWith()
 
     it 'should return current instance', ->
-      expect(ret).toEqual tpl
+      expect(ret).toBe tpl
 
   describe 'Get', ->
     beforeEach ->

@@ -15,7 +15,7 @@ describe 'Add Elements', ->
     expect(tpl.addElements).toHaveBeenCalled()
 
   it 'should return the current instance', ->
-    expect(ret).toEqual tpl
+    expect(ret).toBe tpl
 
   it 'should add correct first element', ->
     expect(ret.elements.e1).toEqual 'e1'
