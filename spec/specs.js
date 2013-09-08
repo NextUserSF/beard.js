@@ -887,4 +887,65 @@
     });
   });
 
+  describe('Add Variable', function() {
+    var key, ret, tpl, value;
+    tpl = null;
+    ret = null;
+    key = 'v1';
+    value = 'variable';
+    beforeEach(function() {
+      tpl = new Beard();
+      spyOn(tpl, 'addVariable').andCallThrough();
+      return ret = tpl.addVariable(key, value);
+    });
+    it('should have been called', function() {
+      return expect(tpl.addVariable).toHaveBeenCalled();
+    });
+    it('should return the current instance', function() {
+      return expect(ret).toBe(tpl);
+    });
+    it('should add variable', function() {
+      return expect(ret.dat.v1).toBeDefined();
+    });
+    return it('should add variable with correct value', function() {
+      return expect(ret.dat.v1).toEqual('variable');
+    });
+  });
+
+  describe('Remove Variable', function() {
+    var data, ret, tpl;
+    tpl = null;
+    ret = null;
+    data = {
+      v1: 'v1',
+      v2: 'v2'
+    };
+    beforeEach(function() {
+      tpl = new Beard('', data);
+      return spyOn(tpl, 'remVariable').andCallThrough();
+    });
+    describe('Before', function() {
+      return it('variable should exist', function() {
+        return expect(tpl.dat.v1).toBeDefined();
+      });
+    });
+    return describe('After', function() {
+      beforeEach(function() {
+        return ret = tpl.remVariable('v1');
+      });
+      it('should have been called', function() {
+        return expect(tpl.remVariable).toHaveBeenCalled();
+      });
+      it('should return the current object instance', function() {
+        return expect(ret).toBe(tpl);
+      });
+      it('element shouldn\'t exist', function() {
+        return expect(tpl.dat.v1).toBeUndefined();
+      });
+      return it('unremoved element should exist', function() {
+        return expect(tpl.dat.v2).toBeDefined();
+      });
+    });
+  });
+
 }).call(this);
