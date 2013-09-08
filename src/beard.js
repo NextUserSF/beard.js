@@ -444,7 +444,7 @@
             {Beard} Current instance for chained command
         */
         remVariable: function (key) {
-            this.dat[key] = null;
+            delete this.dat[key];
 
             return this;
         },
