@@ -948,4 +948,343 @@
     });
   });
 
+  describe('Reset Data Object', function() {
+    var data, ret, tpl;
+    tpl = null;
+    ret = null;
+    data = {
+      v1: 'v1',
+      v2: 'v2'
+    };
+    beforeEach(function() {
+      tpl = new Beard('', data);
+      spyOn(tpl, 'resetDataObject').andCallThrough();
+      return ret = tpl.resetDataObject();
+    });
+    it('should have been called', function() {
+      return expect(tpl.resetDataObject).toHaveBeenCalled();
+    });
+    it('should return the current object instance', function() {
+      return expect(ret).toBe(tpl);
+    });
+    return it('should have empty data', function() {
+      return expect(tpl.dat).toEqual({});
+    });
+  });
+
+  describe('Function', function() {
+    var data, ret, tpl;
+    tpl = null;
+    ret = null;
+    data = {
+      f1: function() {
+        return 'Plain function call';
+      },
+      o: {
+        f2: function() {
+          return 'Nested function call';
+        }
+      },
+      hello: function(who) {
+        return "Hello, " + who + "!";
+      }
+    };
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'func').andCallThrough();
+    });
+    describe('Plain', function() {
+      beforeEach(function() {
+        return ret = tpl.func(data, 'f1()');
+      });
+      it('should have been called', function() {
+        return expect(tpl.func).toHaveBeenCalled();
+      });
+      return it('should return correct value', function() {
+        return expect(ret).toEqual('Plain function call');
+      });
+    });
+    describe('Nested', function() {
+      beforeEach(function() {
+        return ret = tpl.func(data, 'o.f2()');
+      });
+      it('should have been called', function() {
+        return expect(tpl.func).toHaveBeenCalled();
+      });
+      return it('should return correct value', function() {
+        return expect(ret).toEqual('Nested function call');
+      });
+    });
+    return describe('With Argument', function() {
+      beforeEach(function() {
+        return ret = tpl.func(data, 'hello(world)');
+      });
+      it('should have been called', function() {
+        return expect(tpl.func).toHaveBeenCalled();
+      });
+      return it('should return correct value', function() {
+        return expect(ret).toEqual('Hello, world!');
+      });
+    });
+  });
+
+  describe('Argument', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'arg').andCallThrough();
+    });
+    describe('Empty', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return an empty string', function() {
+        return expect(ret).toEqual('');
+      });
+    });
+    describe('True', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('true');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return true', function() {
+        return expect(ret).toBeTruthy();
+      });
+    });
+    describe('False', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('false');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return false', function() {
+        return expect(ret).toBeFalsy();
+      });
+    });
+    describe('Null', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('null');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return null', function() {
+        return expect(ret).toBeNull();
+      });
+    });
+    describe('Undefined', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('undefined');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return undefined', function() {
+        return expect(ret).toBeUndefined();
+      });
+    });
+    describe('Float', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('3.14159');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return π', function() {
+        return expect(ret).toEqual(3.14159);
+      });
+    });
+    describe('Integer', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('1024');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return 2¹⁰', function() {
+        return expect(ret).toEqual(1024);
+      });
+    });
+    return describe('String', function() {
+      beforeEach(function() {
+        return ret = tpl.arg('String');
+      });
+      it('should have been called', function() {
+        return expect(tpl.arg).toHaveBeenCalled();
+      });
+      return it('should return a string', function() {
+        return expect(ret).toEqual('String');
+      });
+    });
+  });
+
+  describe('Nested Variables', function() {
+    var data, ret, tpl;
+    tpl = null;
+    ret = null;
+    data = {
+      v0: 'Level 0',
+      v1: {
+        v1_1: 'Level 1'
+      },
+      v2: {
+        v2_1: {
+          v2_1_1: 'Level 2'
+        }
+      }
+    };
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'key').andCallThrough();
+    });
+    describe('Variable', function() {
+      describe('Level Zero', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v0');
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        return it('should return the correct value', function() {
+          return expect(ret).toEqual('Level 0');
+        });
+      });
+      describe('Level One', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v1.v1_1');
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        return it('should return the correct value', function() {
+          return expect(ret).toEqual('Level 1');
+        });
+      });
+      return describe('Level Two', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v2.v2_1.v2_1_1');
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        return it('should return the correct value', function() {
+          return expect(ret).toEqual('Level 2');
+        });
+      });
+    });
+    return describe('Parent', function() {
+      describe('Level Zero', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v0', true);
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        it('should return parent', function() {
+          return expect(ret.parent).toEqual(data);
+        });
+        return it('should return the correct value', function() {
+          return expect(ret.ref).toEqual('Level 0');
+        });
+      });
+      describe('Level One', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v1.v1_1', true);
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        it('should return parent', function() {
+          return expect(ret.parent).toEqual(data.v1);
+        });
+        return it('should return the correct value', function() {
+          return expect(ret.ref).toEqual('Level 1');
+        });
+      });
+      return describe('Level Two', function() {
+        beforeEach(function() {
+          return ret = tpl.key(data, 'v2.v2_1.v2_1_1', true);
+        });
+        it('should have been called', function() {
+          return expect(tpl.key).toHaveBeenCalled();
+        });
+        it('should return parent', function() {
+          return expect(ret.parent).toEqual(data.v2.v2_1);
+        });
+        return it('should return the correct value', function() {
+          return expect(ret.ref).toEqual('Level 2');
+        });
+      });
+    });
+  });
+
+  describe('Trim', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      tpl = new Beard();
+      return spyOn(tpl, 'trim').andCallThrough();
+    });
+    describe('Empty string', function() {
+      beforeEach(function() {
+        return ret = tpl.trim('');
+      });
+      it('should have been called', function() {
+        return expect(tpl.trim).toHaveBeenCalled();
+      });
+      return it('should return an empty string', function() {
+        return expect(ret).toEqual('');
+      });
+    });
+    describe('Whitespaces', function() {
+      it('should trim spaces from the left', function() {
+        ret = tpl.trim('   s');
+        return expect(ret).toEqual('s');
+      });
+      it('should trim spaces from the right', function() {
+        ret = tpl.trim('s   ');
+        return expect(ret).toEqual('s');
+      });
+      it('should trim spaces from the both ends', function() {
+        ret = tpl.trim('   s   ');
+        return expect(ret).toEqual('s');
+      });
+      return it('should trim tab-spaces and new-line characters', function() {
+        ret = tpl.trim('\t\t\ts\n\n\n');
+        return expect(ret).toEqual('s');
+      });
+    });
+    return describe('Tokens', function() {
+      it('should trim tokens from the left', function() {
+        ret = tpl.trim('"""s', '"');
+        return expect(ret).toEqual('s');
+      });
+      it('should trim tokens from the right', function() {
+        ret = tpl.trim('s"""', '"');
+        return expect(ret).toEqual('s');
+      });
+      it('should trim tokens from the both ends', function() {
+        ret = tpl.trim('"""s"""', '"');
+        return expect(ret).toEqual('s');
+      });
+      it('should trim multi-char tokens', function() {
+        ret = tpl.trim('foosfoo', 'foo');
+        return expect(ret).toEqual('s');
+      });
+      return it('should trim wide-char tokens', function() {
+        ret = tpl.trim('☺s☺', '☺');
+        return expect(ret).toEqual('s');
+      });
+    });
+  });
+
 }).call(this);
