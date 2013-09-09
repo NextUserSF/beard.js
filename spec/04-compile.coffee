@@ -36,7 +36,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'Hello e1 e2 e3 world'
+      expect(ret).toEqual 'Hello e1 e2 e3    world'
 
   describe 'Variables, no Elements and Template', ->
     beforeEach ->
@@ -56,7 +56,7 @@ describe 'Compile', ->
       expect(tpl.compile).toHaveBeenCalled()
 
     it 'should return correct compiled template', ->
-      expect(ret).toEqual 'Element e1 not found Element e2 not found Element e3 not found'
+      expect(ret).toEqual 'Hello Element e1 not found Element e2 not found Element e3 not found    world'
 
   describe 'Variables, Elements, no Template', ->
     beforeEach ->

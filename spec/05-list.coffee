@@ -1,6 +1,6 @@
 describe 'List', ->
   tpl = null
-  tplStr = 'Hello <%= v1 %> <%= v2 %> <%= v3 %> world'
+  tplStr = '<li><%= v1 %><%= v2 %><%= v3 %></li>'
   data = [
     { v1: 'v1' }
     { v2: 'v2' }
@@ -17,4 +17,4 @@ describe 'List', ->
     expect(tpl.list).toHaveBeenCalled()
 
   it 'should return correct compiled template', ->
-    expect(ret).toEqual('Hello v1 v2 v3 world')
+    expect(ret).toEqual('<li>v1</li><li>v2</li><li>v3</li>')

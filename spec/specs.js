@@ -471,7 +471,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('Hello e1 e2 e3 world');
+        return expect(ret).toEqual('Hello e1 e2 e3    world');
       });
     });
     describe('Variables, no Elements and Template', function() {
@@ -493,7 +493,7 @@
         return expect(tpl.compile).toHaveBeenCalled();
       });
       return it('should return correct compiled template', function() {
-        return expect(ret).toEqual('Element e1 not found Element e2 not found Element e3 not found');
+        return expect(ret).toEqual('Hello Element e1 not found Element e2 not found Element e3 not found    world');
       });
     });
     describe('Variables, Elements, no Template', function() {
@@ -525,7 +525,7 @@
   describe('List', function() {
     var data, ret, tpl, tplStr;
     tpl = null;
-    tplStr = 'Hello <%= v1 %> <%= v2 %> <%= v3 %> world';
+    tplStr = '<li><%= v1 %><%= v2 %><%= v3 %></li>';
     data = [
       {
         v1: 'v1'
@@ -545,7 +545,7 @@
       return expect(tpl.list).toHaveBeenCalled();
     });
     return it('should return correct compiled template', function() {
-      return expect(ret).toEqual('Hello v1 v2 v3 world');
+      return expect(ret).toEqual('<li>v1</li><li>v2</li><li>v3</li>');
     });
   });
 
