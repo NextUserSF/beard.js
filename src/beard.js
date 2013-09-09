@@ -630,11 +630,8 @@
             {String} Trimed string
         */
         trim: function (str, token) {
-            if (token) {
-                return str.replace(new RegExp('^' + token + '*'), '').replace(new RegExp(token + '*$'), '');
-            }
-
-            return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+            token = token || '[ \\s\xA0]';
+            return str.replace(new RegExp('^' + token + '+|' + token + '+$', 'g'), '');
         }
 
 
