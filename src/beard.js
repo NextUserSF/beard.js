@@ -21,6 +21,7 @@
         this.dat = data || {};
         this.UDEF = undefined;
         this.elements = elements || {};
+        this.debugMode = true;
     }).prototype = {
 
         /*
@@ -311,8 +312,20 @@
                 def = l === 2 ? this.trim(split[1]) : '';
 
             variable = l === 2 ? this.trim(split[0]) : variable;
-
-            return !!data[variable] ? data[variable] : def;
+            
+            if (!!data[variable]) {
+            	return data[variable];
+            }
+            
+            if (!!def) {
+            	return def;
+            }
+            
+            if (this.debugMode) {
+        		return 'Variable ' + variable + ' not found, no default given';
+            }
+            
+            return "";
         },
 
 
@@ -632,8 +645,23 @@
         trim: function (str, token) {
             token = token || '[ \\s\xA0]';
             return str.replace(new RegExp('^' + token + '+|' + token + '+$', 'g'), '');
-        }
-
+        },
+        
+        /*
+	        Function: setDebugMode
+			
+	        Parameters:
+	            debugMode {Boolean} Debug mode is enable not not
+	
+	        Return:
+	        {Beard} Current instance for chained command on this element
+        */
+	    setDebugMode: function (debugMode) {
+	    	
+	    	this.debugMode = debugMode;
+	    	
+	    	return this;
+	    }        
 
     };
 
