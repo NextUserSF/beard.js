@@ -1,29 +1,3 @@
-/*jslint browser: true*/
-/*
-    Package: Beard.js
- */
-(function (global) {
-
-    "use strict";
-
-    var Beard;
-
-    /*
-       Constructor: Beard
-
-        Parameters:
-            tpl {String} [] Template
-            data {Object} [] Data
-            elements {Object} [] Elements
-    */
-    (Beard = function (tpl, data, elements) {
-        this.tpl = tpl || '';
-        this.dat = data || {};
-        this.UDEF = undefined;
-        this.elements = elements || {};
-        this.debugMode = true;
-    }).prototype = {
-
         /*
             Function: set
 
@@ -31,7 +5,6 @@
 
             Parameters:
                 tpl {String} The template as a string
-
 
             Return:
             {Beard} Current instance for chained command on this element
@@ -47,8 +20,6 @@
 
             Get the template
 
-
-
             Return:
             {String} The template as string
         */
@@ -61,10 +32,8 @@
 
             Render the template
 
-
             Parameters:
                 data {Object} [Optional] Data source
-
 
             Return:
             {String} Compilated template
@@ -74,7 +43,7 @@
                 this.dat = data;
             }
 
-            return this.compile(this.tpl, this.dat);
+            return Beard.compile(this.tpl, {elements: this.elements, variables: this.dat});
         },
         /*
             Function: getRequired
@@ -166,81 +135,19 @@
             return res;
         },
 
+
         /*
             Function: compile
 
             Compile the template with data
 
-
             Parameters:
                 tpl {String} Template
                 data {Object} Data source
 
-
             Return:
             {String} Result of template compilation
         */
-        compile: function (tpl, data) {
-            var i = 0,
-                j = -1,
-                res = [],
-                t,
-                key,
-                sub,
-                l = tpl.length;
-
-            while (i < l) {
-                j = tpl.indexOf('<%', i);
-
-                // Nothing else
-                if (j === -1) {
-                    res.push(tpl.substr(i));
-
-                    break;
-
-                // Go through
-                } else if (tpl[j + 2] === '+') {
-                    res.push(tpl.substring(i, j));
-
-                    t = tpl.indexOf('%>', i);
-
-                    key = this.trim(tpl.substring(j + 3, t));
-
-                    j = tpl.indexOf('<%- ' + key + ' %>', t);
-
-                    if (j === -1) {
-                        throw new Error('Missing "<%- identifier %>" at end of template / ' + tpl.substring(i));
-                    }
-
-                    sub = tpl.substring(t + 2, j);
-
-                    res.push(this.list(sub, this.key(data, key)));
-
-                    i = j + String('<%- ' + key + ' %>').length;
-
-                // Basic
-                } else {
-
-                    res.push(tpl.substring(i, j));
-
-                    i = j;
-
-
-                    j = tpl.indexOf('%>', i);
-
-                    if (j === -1) {
-                        throw new Error('Missing "%>" at end of template / ' + tpl.substring(i));
-                    }
-
-                    res.push(this.evaluate(this.trim(tpl.substring(i + 2, j)), data));
-
-                    i = j + 2;
-
-                }
-            }
-
-            return res.join('');
-        },
 
         /*
             Function: list
@@ -313,19 +220,7 @@
 
             variable = l === 2 ? this.trim(split[0]) : variable;
 
-            if (!!data[variable]) {
-                return data[variable];
-            }
-
-            if (!!def) {
-                return def;
-            }
-
-            if (this.debugMode) {
-                return 'Variable ' + variable + ' not found, no default given';
-            }
-
-            return "";
+            return !!data[variable] ? data[variable] : def;
         },
 
 
@@ -407,22 +302,6 @@
 
             return this;
         },
-
-        /*
-            Function: evaluateElement
-
-            Evaluate an element with given data
-
-            Parameters:
-                data {Object|String} Data source
-
-            Return:
-            {String} Result of evaluation
-        */
-        evaluateElement: function (element, data) {
-            return this.compile(this.elements[element] || '<% Element ' + element + ' not found %>', data);
-        },
-
 
 
         /*
@@ -645,25 +524,6 @@
         trim: function (str, token) {
             token = token || '[ \\s\xA0]';
             return str.replace(new RegExp('^' + token + '+|' + token + '+$', 'g'), '');
-        },
-
-        /*
-            Function: setDebugMode
-
-            Parameters:
-                debugMode {Boolean} Debug mode is enable not not
-
-            Return:
-            {Beard} Current instance for chained command on this element
-        */
-        setDebugMode: function (debugMode) {
-            this.debugMode = debugMode;
-
-            return this;
         }
 
-    };
 
-    global.Beard = Beard;
-
-}(window));
