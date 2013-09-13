@@ -17,7 +17,7 @@ Compiler.prototype = {
         for (i; i < l; i += 1) {
             statement = statements[i];
             console.log(statement);
-            this[statement.type](statement);
+            this.result.push(this[statement.type](statement));
         }
 
         return this;
@@ -25,30 +25,70 @@ Compiler.prototype = {
 
     element: function (element) {
         if (this.options.elements[element.id]) {
-            this.result.push(Beard.evaluateElement(this.options.elements[element.id], this.options));
-        } else {
-            this.result.push("Element " + element.id + " not found");
+            return Beard.evaluateElement(this.options.elements[element.id], this.options);
         }
+
+        return "Element " + element.id + " not found";
     },
 
     content: function (string) {
-        this.result.push(string.string);
+        return string.string;
     },
 
     data: function (data) {
-        if (typeof this.options.variables[data.variable] === 'undefined') {
-            this.result.push(data.def);
-        } else {
-            this.result.push(this.options.variables[data.variable]);
+        var i = 0,
+            l = data.variable.length,
+            v = this.options.variables,
+            key;
+
+        for (; i < l; i += 1) {
+            key = data.variable[i];
+            v = v[key];
+
+            if (typeof v === 'undefined') {
+                if (data.def) {
+                    v = this[data.def.type](data.def);
+                } else {
+                    v = '';
+                }
+                break;
+            }
         }
+
+        return v;
     },
 
-    getData: function (data) {
-        return (!!this.options.variables[data.variable] ?
-            this.options.variables[data.variable] : data.def);
+    func: function (func) {
+        var i = 0,
+            l = func.func.length,
+            fn = this.options.variables,
+            key;
+
+        for (; i < l; i += 1) {
+            key = func.func[i];
+            fn = fn[key];
+
+            if (typeof fn === 'undefined') {
+                if (func.def) {
+                    return this[func.def.type](func.def);
+                }
+
+                return;
+            }
+        }
+
+        return fn.apply(this.options.variables, this.args(func.args));
     },
 
-    comment: function () { },
+    args: function (args) {
+        return args.map(function (v) {
+            return this[v.type](v);
+        }, this);
+    },
+
+    comment: function () {
+        return '';
+    },
 
     block: function (block) {
         // TODO: This is ugly
@@ -82,5 +122,9 @@ Compiler.prototype = {
                 }
             }
         }
+    },
+
+    STRING: function (string) {
+        return string.string;
     }
 };

@@ -12,7 +12,7 @@
     <body>
         <textarea id="tpl"><%@ header %>
 
-<p>Hello <%= who | "John Smith" %>!</p>
+<p>Hello <%= who.first_name | "John" %>!</p>
 
 <%# This is comment %>
 
@@ -31,6 +31,8 @@
 <% endforeach %>
 </dl>
 
+<p>Function call: <%= echo("Hello", "world", 123) %></p>
+
 <%@ footer %></textarea>
 <button id="comp">Compile</button>
 <hr>
@@ -41,18 +43,28 @@
     $('#comp').on('click', function () {
         var tpl = $('#tpl').val(),
             data = {
-                who: 'John Doe',
+                who: {
+                    first_name: 'John',
+                    last_name: 'Doe',
+                    full_name: function () {
+                        return data.who.first_name + ' ' + data.who.last_name;
+                    }
+                },
                 arr: ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'],
                 obj: {
                     animal: 'Cat',
                     car: 'BMW',
                     color: 'Purple',
                     fruit: 'Apple'
+                },
+                echo: function () {
+                    var array = Array.prototype.slice.call(arguments, 0);
+                    return array.join(' ');
                 }
             },
             elements = {
-                header: '<h1>This is the special message for <%= who %></h1>',
-                footer: '<address>Good bye, <%= who %>!</address>'
+                header: '<h1>This is the special message for <%= who.full_name() %></h1>',
+                footer: '<address>Good bye, mr. <%= who.last_name %>!</address>'
             },
             beard = new Beard(tpl, data, elements);
 

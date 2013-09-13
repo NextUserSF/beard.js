@@ -2,7 +2,7 @@
 
 %%
 
-root: statements EOF { return new yy.ProgramNode($1) }
+root: statements EOF { return new yy.ProgramNode($1); }
     ;
 
 program: statements -> new yy.ProgramNode($1)
@@ -14,26 +14,41 @@ statements: statement -> [$1]
           ;
 
 statement: openBlock program closeBlock -> new yy.BlockNode($1, $2, $3)
-         | element -> new yy.ElementNode($1)
-         | variable -> new yy.DataNode($1)
+         | elementTag -> new yy.ElementNode($1)
+         | variableTag -> $1
          | CONTENT -> new yy.ContentNode($1)
          | COMMENT -> new yy.CommentNode($1)
          ;
 
-openBlock: FOREACH variable CLOSE -> [$1, new yy.DataNode($2)]
+openBlock: FOREACH segments CLOSE -> [$1, new yy.DataNode($2)]
          ;
 
 closeBlock: ENDFOREACH -> $1
           ;
 
-element: OPEN_ELEMENT ID CLOSE -> $2
-       ;
+elementTag: OPEN_ELEMENT ID CLOSE -> $2
+          ;
 
-variable: OPEN_VARIABLE ID CLOSE -> [$2]
-        | OPEN_VARIABLE ID ALT STRING CLOSE -> [$2, $4]
+variableTag: OPEN_VARIABLE var CLOSE -> $2
+           | OPEN_VARIABLE func CLOSE -> $2
+           ;
+
+var: segments -> new yy.DataNode($1)
+   | segments ALT param -> new yy.DataNode($1, $3)
+   ;
+
+func: segments OP args CP -> new yy.FuncNode($1, $3)
+    | segments OP args CP ALT param -> new yy.FuncNode($1, $3, $6)
+    ;
+
+segments: segments SEP ID { $1.push($3); $$ = $1; }
         | ID -> [$1]
-        | ID ALT STRING -> [$1, $3]
         ;
+
+args: args COMMA param { $1.push($3); $$ = $1; }
+    | param -> [$1]
+    | '' -> []
+    ;
 
 param: STRING -> new yy.StringNode($1)
      | INTEGER -> new yy.IntegerNode($1)
