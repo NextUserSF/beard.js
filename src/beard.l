@@ -39,6 +39,8 @@ ID    [^\s!"#%-,\.\/;->@\[-\^`\{-~]+/[=}\s\/.]
 <beard>'"'("\\"["]|[^"])*'"'                yytext = strip(1,2).replace(/\\"/g,'"'); return 'STRING';
 <beard>"'"("\\"[']|[^'])*"'"                yytext = strip(1,2).replace(/\\'/g,"'"); return 'STRING';
 <beard>\-?[0-9]+                            return 'INTEGER';
+<beard>"true"                               return 'BOOLEAN';
+<beard>"false"                              return 'BOOLEAN';
 
 <beard>[a-zA-Z_][a-zA-Z0-9_]*               return 'ID';
 

@@ -12,7 +12,7 @@
     });
     describe('Plain Variable', function() {
       it('should return correct value', function() {
-        tpl.set('<%= variable | "Default" %>');
+        tpl.set('<%= variable %>');
         tpl.addVariable('variable', 'Variable');
         ret = tpl.render();
         return expect(ret).toEqual('Variable');
@@ -25,7 +25,7 @@
     });
     describe('Nested Variable', function() {
       it('should return correct value', function() {
-        tpl.set('<%= nested.variable | "Default" %>');
+        tpl.set('<%= nested.variable %>');
         tpl.addVariable('nested', {
           variable: 'Nested Variable'
         });
@@ -38,9 +38,9 @@
         return expect(ret).toEqual('Default');
       });
     });
-    describe('Plain Function call', function() {
+    describe('Plain Function Call', function() {
       it('should return correct value', function() {
-        tpl.set('<%= func() | "Default" %>');
+        tpl.set('<%= func() %>');
         tpl.addVariable('func', function() {
           return 'Function call';
         });
@@ -63,14 +63,94 @@
         return expect(ret).toEqual('John Doe');
       });
     });
-    return describe('Plain Function call with Arguments', function() {
-      return it('should return correct value', function() {
-        tpl.set('<%= func("Function call") | "Default" %>');
+    describe('Plain Function Call with Arguments', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= func("Function call") %>');
         tpl.addVariable('func', function(x) {
           return x;
         });
         ret = tpl.render();
         return expect(ret).toEqual('Function call');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= func("Function call") | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Nested Function Call', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= nested.func() | "Default" %>');
+        tpl.addVariable('nested', {
+          func: function() {
+            return 'Function call';
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+      it('should return default value', function() {
+        tpl.set('<%= nested.func() | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+      return it('should handle `this` correct', function() {
+        tpl.set('<%= nested.full_name() %>');
+        tpl.addVariable('first_name', 'Robert');
+        tpl.addVariable('last_name', 'Roe');
+        tpl.addVariable('full_name', function() {
+          return "" + this.first_name + " " + this.last_name;
+        });
+        tpl.addVariable('nested', {
+          first_name: 'John',
+          last_name: 'Doe',
+          full_name: function() {
+            return "" + this.first_name + " " + this.last_name;
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('John Doe');
+      });
+    });
+    describe('Nested Function Call with Arguments', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= nested.func("Function call") | "Default" %>');
+        tpl.addVariable('nested', {
+          func: function(x) {
+            return x;
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+    });
+    describe('Plain Function-Value mixture', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= func().variable %>');
+        tpl.addVariable('func', function() {
+          return {
+            variable: 'Variable'
+          };
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Variable');
+      });
+    });
+    return describe('Default parameters', function() {
+      it('should return String', function() {
+        tpl.set('<%= variable | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+      it('should return Integer', function() {
+        tpl.set('<%= variable | 1024 %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('1024');
+      });
+      return it('should return Boolean', function() {
+        tpl.set('<%= variable | true %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('true');
       });
     });
   });

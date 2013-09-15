@@ -575,10 +575,10 @@ FIXME: Change name?</p>
                 <span class="string">"func"</span>: <span class="number">22</span>,
                 <span class="string">"ALT"</span>: <span class="number">23</span>,
                 <span class="string">"param"</span>: <span class="number">24</span>,
-                <span class="string">"OP"</span>: <span class="number">25</span>,
-                <span class="string">"args"</span>: <span class="number">26</span>,
-                <span class="string">"CP"</span>: <span class="number">27</span>,
-                <span class="string">"SEP"</span>: <span class="number">28</span>,
+                <span class="string">"SEP"</span>: <span class="number">25</span>,
+                <span class="string">"OP"</span>: <span class="number">26</span>,
+                <span class="string">"args"</span>: <span class="number">27</span>,
+                <span class="string">"CP"</span>: <span class="number">28</span>,
                 <span class="string">"COMMA"</span>: <span class="number">29</span>,
                 <span class="string">"STRING"</span>: <span class="number">30</span>,
                 <span class="string">"INTEGER"</span>: <span class="number">31</span>,
@@ -598,9 +598,9 @@ FIXME: Change name?</p>
                 <span class="number">19</span>: <span class="string">"ID"</span>,
                 <span class="number">20</span>: <span class="string">"OPEN_VARIABLE"</span>,
                 <span class="number">23</span>: <span class="string">"ALT"</span>,
-                <span class="number">25</span>: <span class="string">"OP"</span>,
-                <span class="number">27</span>: <span class="string">"CP"</span>,
-                <span class="number">28</span>: <span class="string">"SEP"</span>,
+                <span class="number">25</span>: <span class="string">"SEP"</span>,
+                <span class="number">26</span>: <span class="string">"OP"</span>,
+                <span class="number">28</span>: <span class="string">"CP"</span>,
                 <span class="number">29</span>: <span class="string">"COMMA"</span>,
                 <span class="number">30</span>: <span class="string">"STRING"</span>,
                 <span class="number">31</span>: <span class="string">"INTEGER"</span>,
@@ -623,13 +623,14 @@ FIXME: Change name?</p>
                 [<span class="number">11</span>, <span class="number">3</span>],
                 [<span class="number">21</span>, <span class="number">1</span>],
                 [<span class="number">21</span>, <span class="number">3</span>],
+                [<span class="number">21</span>, <span class="number">3</span>],
                 [<span class="number">22</span>, <span class="number">4</span>],
                 [<span class="number">22</span>, <span class="number">6</span>],
                 [<span class="number">15</span>, <span class="number">3</span>],
                 [<span class="number">15</span>, <span class="number">1</span>],
-                [<span class="number">26</span>, <span class="number">3</span>],
-                [<span class="number">26</span>, <span class="number">1</span>],
-                [<span class="number">26</span>, <span class="number">0</span>],
+                [<span class="number">27</span>, <span class="number">3</span>],
+                [<span class="number">27</span>, <span class="number">1</span>],
+                [<span class="number">27</span>, <span class="number">0</span>],
                 [<span class="number">24</span>, <span class="number">1</span>],
                 [<span class="number">24</span>, <span class="number">1</span>],
                 [<span class="number">24</span>, <span class="number">1</span>],
@@ -692,38 +693,41 @@ FIXME: Change name?</p>
                         <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode($$[$<span class="number">0</span> - <span class="number">2</span>], $$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">18</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.FuncNode($$[$<span class="number">0</span> - <span class="number">3</span>], $$[$<span class="number">0</span> - <span class="number">1</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode([$$[$<span class="number">0</span> - <span class="number">2</span>]].concat($$[$<span class="number">0</span>]));
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">19</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.FuncNode($$[$<span class="number">0</span> - <span class="number">5</span>], $$[$<span class="number">0</span> - <span class="number">3</span>], $$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.FuncNode($$[$<span class="number">0</span> - <span class="number">3</span>], $$[$<span class="number">0</span> - <span class="number">1</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">20</span>:
-                        $$[$<span class="number">0</span> - <span class="number">2</span>].push($$[$<span class="number">0</span>]);
-                        <span class="keyword">this</span>.$ = $$[$<span class="number">0</span> - <span class="number">2</span>];
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.FuncNode($$[$<span class="number">0</span> - <span class="number">5</span>], $$[$<span class="number">0</span> - <span class="number">3</span>], $$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">21</span>:
-                        <span class="keyword">this</span>.$ = [$$[$<span class="number">0</span>]];
-                        <span class="keyword">break</span>;
-                    <span class="keyword">case</span> <span class="number">22</span>:
                         $$[$<span class="number">0</span> - <span class="number">2</span>].push($$[$<span class="number">0</span>]);
                         <span class="keyword">this</span>.$ = $$[$<span class="number">0</span> - <span class="number">2</span>];
                         <span class="keyword">break</span>;
-                    <span class="keyword">case</span> <span class="number">23</span>:
+                    <span class="keyword">case</span> <span class="number">22</span>:
                         <span class="keyword">this</span>.$ = [$$[$<span class="number">0</span>]];
                         <span class="keyword">break</span>;
+                    <span class="keyword">case</span> <span class="number">23</span>:
+                        $$[$<span class="number">0</span> - <span class="number">2</span>].push($$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = $$[$<span class="number">0</span> - <span class="number">2</span>];
+                        <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">24</span>:
-                        <span class="keyword">this</span>.$ = [];
+                        <span class="keyword">this</span>.$ = [$$[$<span class="number">0</span>]];
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">25</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.StringNode($$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = [];
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">26</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.IntegerNode($$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.StringNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">27</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.BooleanNode($$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.IntegerNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">28</span>:
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.BooleanNode($$[$<span class="number">0</span>]);
+                        <span class="keyword">break</span>;
+                    <span class="keyword">case</span> <span class="number">29</span>:
                         <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.IdNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                 }
@@ -842,23 +846,24 @@ FIXME: Change name?</p>
                 <span class="number">20</span>: [<span class="number">1</span>, <span class="number">11</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">1</span>, <span class="number">24</span>],
-                <span class="number">28</span>: [<span class="number">1</span>, <span class="number">25</span>]
+                <span class="number">25</span>: [<span class="number">1</span>, <span class="number">25</span>]
             }, {
-                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">21</span>],
-                <span class="number">23</span>: [<span class="number">2</span>, <span class="number">21</span>],
-                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">21</span>],
-                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">21</span>]
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">22</span>],
+                <span class="number">23</span>: [<span class="number">2</span>, <span class="number">22</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">22</span>],
+                <span class="number">26</span>: [<span class="number">2</span>, <span class="number">22</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">1</span>, <span class="number">26</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">1</span>, <span class="number">27</span>]
             }, {
-                <span class="number">16</span>: [<span class="number">1</span>, <span class="number">28</span>]
+                <span class="number">16</span>: [<span class="number">1</span>, <span class="number">28</span>],
+                <span class="number">25</span>: [<span class="number">1</span>, <span class="number">29</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">2</span>, <span class="number">16</span>],
-                <span class="number">23</span>: [<span class="number">1</span>, <span class="number">29</span>],
-                <span class="number">25</span>: [<span class="number">1</span>, <span class="number">30</span>],
-                <span class="number">28</span>: [<span class="number">1</span>, <span class="number">25</span>]
+                <span class="number">23</span>: [<span class="number">1</span>, <span class="number">30</span>],
+                <span class="number">25</span>: [<span class="number">1</span>, <span class="number">25</span>],
+                <span class="number">26</span>: [<span class="number">1</span>, <span class="number">31</span>]
             }, {
                 <span class="number">5</span>: [<span class="number">2</span>, <span class="number">6</span>],
                 <span class="number">12</span>: [<span class="number">2</span>, <span class="number">6</span>],
@@ -883,7 +888,7 @@ FIXME: Change name?</p>
                 <span class="number">18</span>: [<span class="number">2</span>, <span class="number">11</span>],
                 <span class="number">20</span>: [<span class="number">2</span>, <span class="number">11</span>]
             }, {
-                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">31</span>]
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">32</span>]
             }, {
                 <span class="number">5</span>: [<span class="number">2</span>, <span class="number">13</span>],
                 <span class="number">12</span>: [<span class="number">2</span>, <span class="number">13</span>],
@@ -909,74 +914,85 @@ FIXME: Change name?</p>
                 <span class="number">18</span>: [<span class="number">2</span>, <span class="number">15</span>],
                 <span class="number">20</span>: [<span class="number">2</span>, <span class="number">15</span>]
             }, {
-                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">36</span>],
-                <span class="number">24</span>: <span class="number">32</span>,
-                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">33</span>],
-                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">34</span>],
-                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">35</span>]
+                <span class="number">15</span>: <span class="number">33</span>,
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">17</span>]
             }, {
-                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">36</span>],
-                <span class="number">24</span>: <span class="number">38</span>,
-                <span class="number">26</span>: <span class="number">37</span>,
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">24</span>],
-                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">24</span>],
-                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">33</span>],
-                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">34</span>],
-                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">35</span>]
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">38</span>],
+                <span class="number">24</span>: <span class="number">34</span>,
+                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">35</span>],
+                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">36</span>],
+                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">37</span>]
             }, {
-                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">20</span>],
-                <span class="number">23</span>: [<span class="number">2</span>, <span class="number">20</span>],
-                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">20</span>],
-                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">20</span>]
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">38</span>],
+                <span class="number">24</span>: <span class="number">40</span>,
+                <span class="number">27</span>: <span class="number">39</span>,
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">25</span>],
+                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">25</span>],
+                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">35</span>],
+                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">36</span>],
+                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">37</span>]
+            }, {
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">21</span>],
+                <span class="number">23</span>: [<span class="number">2</span>, <span class="number">21</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">21</span>],
+                <span class="number">26</span>: [<span class="number">2</span>, <span class="number">21</span>]
+            }, {
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">18</span>],
+                <span class="number">25</span>: [<span class="number">1</span>, <span class="number">25</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">2</span>, <span class="number">17</span>]
             }, {
-                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">25</span>],
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">25</span>],
-                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">25</span>]
-            }, {
                 <span class="number">16</span>: [<span class="number">2</span>, <span class="number">26</span>],
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">26</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">26</span>],
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">26</span>],
                 <span class="number">29</span>: [<span class="number">2</span>, <span class="number">26</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">2</span>, <span class="number">27</span>],
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">27</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">27</span>],
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">27</span>],
                 <span class="number">29</span>: [<span class="number">2</span>, <span class="number">27</span>]
             }, {
                 <span class="number">16</span>: [<span class="number">2</span>, <span class="number">28</span>],
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">28</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">28</span>],
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">28</span>],
                 <span class="number">29</span>: [<span class="number">2</span>, <span class="number">28</span>]
             }, {
-                <span class="number">27</span>: [<span class="number">1</span>, <span class="number">39</span>],
-                <span class="number">29</span>: [<span class="number">1</span>, <span class="number">40</span>]
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">29</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">29</span>],
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">29</span>],
+                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">29</span>]
             }, {
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">23</span>],
+                <span class="number">28</span>: [<span class="number">1</span>, <span class="number">41</span>],
+                <span class="number">29</span>: [<span class="number">1</span>, <span class="number">42</span>]
+            }, {
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">24</span>],
+                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">24</span>]
+            }, {
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">19</span>],
+                <span class="number">23</span>: [<span class="number">1</span>, <span class="number">43</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">19</span>]
+            }, {
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">38</span>],
+                <span class="number">24</span>: <span class="number">44</span>,
+                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">35</span>],
+                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">36</span>],
+                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">37</span>]
+            }, {
+                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">38</span>],
+                <span class="number">24</span>: <span class="number">45</span>,
+                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">35</span>],
+                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">36</span>],
+                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">37</span>]
+            }, {
+                <span class="number">28</span>: [<span class="number">2</span>, <span class="number">23</span>],
                 <span class="number">29</span>: [<span class="number">2</span>, <span class="number">23</span>]
             }, {
-                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">18</span>],
-                <span class="number">23</span>: [<span class="number">1</span>, <span class="number">41</span>]
-            }, {
-                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">36</span>],
-                <span class="number">24</span>: <span class="number">42</span>,
-                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">33</span>],
-                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">34</span>],
-                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">35</span>]
-            }, {
-                <span class="number">19</span>: [<span class="number">1</span>, <span class="number">36</span>],
-                <span class="number">24</span>: <span class="number">43</span>,
-                <span class="number">30</span>: [<span class="number">1</span>, <span class="number">33</span>],
-                <span class="number">31</span>: [<span class="number">1</span>, <span class="number">34</span>],
-                <span class="number">32</span>: [<span class="number">1</span>, <span class="number">35</span>]
-            }, {
-                <span class="number">27</span>: [<span class="number">2</span>, <span class="number">22</span>],
-                <span class="number">29</span>: [<span class="number">2</span>, <span class="number">22</span>]
-            }, {
-                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">19</span>]
+                <span class="number">16</span>: [<span class="number">2</span>, <span class="number">20</span>],
+                <span class="number">25</span>: [<span class="number">2</span>, <span class="number">20</span>]
             }],
             defaultActions: {
                 <span class="number">12</span>: [<span class="number">2</span>, <span class="number">1</span>],
-                <span class="number">32</span>: [<span class="number">2</span>, <span class="number">17</span>],
-                <span class="number">43</span>: [<span class="number">2</span>, <span class="number">19</span>]
+                <span class="number">34</span>: [<span class="number">2</span>, <span class="number">17</span>]
             },
             parseError: <span class="function"><span class="keyword">function</span> <span class="title">parseError</span><span class="params">(str, hash)</span> {</span>
                 <span class="keyword">if</span> (hash.recoverable) {
@@ -1765,16 +1781,16 @@ FIXME: Change name?</p>
                             <span class="keyword">return</span> <span class="number">23</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">11</span>:
-                            <span class="keyword">return</span> <span class="number">28</span>;
+                            <span class="keyword">return</span> <span class="number">25</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">12</span>:
                             <span class="keyword">return</span> <span class="number">29</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">13</span>:
-                            <span class="keyword">return</span> <span class="number">25</span>;
+                            <span class="keyword">return</span> <span class="number">26</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">14</span>:
-                            <span class="keyword">return</span> <span class="number">27</span>;
+                            <span class="keyword">return</span> <span class="number">28</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">15</span>:
                             <span class="comment">/* ignore whitespace */</span>
@@ -1795,20 +1811,26 @@ FIXME: Change name?</p>
                             <span class="keyword">return</span> <span class="number">31</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">20</span>:
-                            <span class="keyword">return</span> <span class="number">19</span>;
+                            <span class="keyword">return</span> <span class="number">32</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">21</span>:
-                            <span class="keyword">return</span> <span class="string">'INVALID'</span>;
+                            <span class="keyword">return</span> <span class="number">32</span>;
                             <span class="keyword">break</span>;
                         <span class="keyword">case</span> <span class="number">22</span>:
+                            <span class="keyword">return</span> <span class="number">19</span>;
+                            <span class="keyword">break</span>;
+                        <span class="keyword">case</span> <span class="number">23</span>:
+                            <span class="keyword">return</span> <span class="string">'INVALID'</span>;
+                            <span class="keyword">break</span>;
+                        <span class="keyword">case</span> <span class="number">24</span>:
                             <span class="keyword">return</span> <span class="number">5</span>;
                             <span class="keyword">break</span>;
                     }
                 },
-                rules: [<span class="regexp">/^(?:[^\x00]*?(?=(&lt;%)))/</span>, <span class="regexp">/^(?:[^\x00]+)/</span>, <span class="regexp">/^(?:[\s\S]*?%&gt;)/</span>, <span class="regexp">/^(?:&lt;%=)/</span>, <span class="regexp">/^(?:&lt;%@)/</span>, <span class="regexp">/^(?:&lt;%#)/</span>, <span class="regexp">/^(?:&lt;%#[\s\S]*?%&gt;)/</span>, <span class="regexp">/^(?:&lt;% foreach\b)/</span>, <span class="regexp">/^(?:&lt;% endforeach %&gt;)/</span>, <span class="regexp">/^(?:&lt;%)/</span>, <span class="regexp">/^(?:\|)/</span>, <span class="regexp">/^(?:\.)/</span>, <span class="regexp">/^(?:,)/</span>, <span class="regexp">/^(?:\()/</span>, <span class="regexp">/^(?:\))/</span>, <span class="regexp">/^(?:\s+)/</span>, <span class="regexp">/^(?:%&gt;)/</span>, <span class="regexp">/^(?:"(\\["]|[^"])*")/</span>, <span class="regexp">/^(?:'(\\[']|[^'])*')/</span>, <span class="regexp">/^(?:-?[0-9]+)/</span>, <span class="regexp">/^(?:[a-zA-Z_][a-zA-Z0-9_]*)/</span>, <span class="regexp">/^(?:.)/</span>, <span class="regexp">/^(?:$)/</span>],
+                rules: [<span class="regexp">/^(?:[^\x00]*?(?=(&lt;%)))/</span>, <span class="regexp">/^(?:[^\x00]+)/</span>, <span class="regexp">/^(?:[\s\S]*?%&gt;)/</span>, <span class="regexp">/^(?:&lt;%=)/</span>, <span class="regexp">/^(?:&lt;%@)/</span>, <span class="regexp">/^(?:&lt;%#)/</span>, <span class="regexp">/^(?:&lt;%#[\s\S]*?%&gt;)/</span>, <span class="regexp">/^(?:&lt;% foreach\b)/</span>, <span class="regexp">/^(?:&lt;% endforeach %&gt;)/</span>, <span class="regexp">/^(?:&lt;%)/</span>, <span class="regexp">/^(?:\|)/</span>, <span class="regexp">/^(?:\.)/</span>, <span class="regexp">/^(?:,)/</span>, <span class="regexp">/^(?:\()/</span>, <span class="regexp">/^(?:\))/</span>, <span class="regexp">/^(?:\s+)/</span>, <span class="regexp">/^(?:%&gt;)/</span>, <span class="regexp">/^(?:"(\\["]|[^"])*")/</span>, <span class="regexp">/^(?:'(\\[']|[^'])*')/</span>, <span class="regexp">/^(?:-?[0-9]+)/</span>, <span class="regexp">/^(?:true\b)/</span>, <span class="regexp">/^(?:false\b)/</span>, <span class="regexp">/^(?:[a-zA-Z_][a-zA-Z0-9_]*)/</span>, <span class="regexp">/^(?:.)/</span>, <span class="regexp">/^(?:$)/</span>],
                 conditions: {
                     <span class="string">"beard"</span>: {
-                        <span class="string">"rules"</span>: [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>],
+                        <span class="string">"rules"</span>: [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>, <span class="number">23</span>, <span class="number">24</span>],
                         <span class="string">"inclusive"</span>: <span class="literal">false</span>
                     },
                     <span class="string">"com"</span>: {
@@ -1816,7 +1838,7 @@ FIXME: Change name?</p>
                         <span class="string">"inclusive"</span>: <span class="literal">false</span>
                     },
                     <span class="string">"INITIAL"</span>: {
-                        <span class="string">"rules"</span>: [<span class="number">0</span>, <span class="number">1</span>, <span class="number">22</span>],
+                        <span class="string">"rules"</span>: [<span class="number">0</span>, <span class="number">1</span>, <span class="number">24</span>],
                         <span class="string">"inclusive"</span>: <span class="literal">true</span>
                     }
                 }
@@ -1904,6 +1926,11 @@ FIXME: Change name?</p>
         <span class="keyword">this</span>.type = <span class="string">'INTEGER'</span>;
         <span class="keyword">this</span>.integer = integer;
         <span class="keyword">this</span>.stringModeValue = Number(integer);
+    };
+    Beard.AST.BooleanNode = <span class="keyword">function</span>(bool) {
+        <span class="keyword">this</span>.type = <span class="string">'BOOLEAN'</span>;
+        <span class="keyword">this</span>.bool = bool;
+        <span class="keyword">this</span>.stringModeValue = bool === <span class="string">'true'</span>;
     };</pre></div></div>
             
         </li>
@@ -1949,24 +1976,84 @@ FIXME: Change name?</p>
                 <span class="keyword">this</span>.result.push(<span class="keyword">this</span>[statement.type](statement));
             }
             <span class="keyword">return</span> <span class="keyword">this</span>;
-        },
-        element: <span class="keyword">function</span>(element) {
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Compile element</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        element: <span class="keyword">function</span>(element) {
             <span class="keyword">if</span> (<span class="keyword">this</span>.options.elements[element.id]) {
                 <span class="keyword">return</span> Beard.evaluateElement(<span class="keyword">this</span>.options.elements[element.id], <span class="keyword">this</span>.options);
             }
             <span class="keyword">return</span> <span class="string">"Element "</span> + element.id + <span class="string">" not found"</span>;
-        },
-        content: <span class="keyword">function</span>(string) {
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Compile content node</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        content: <span class="keyword">function</span>(string) {
             <span class="keyword">return</span> string.string;
-        },
-        data: <span class="keyword">function</span>(data) {
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>Compile data variable tag</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        data: <span class="keyword">function</span>(data) {
             <span class="keyword">var</span> i = <span class="number">0</span>,
                 l = data.variable.length,
                 v = <span class="keyword">this</span>.options.variables,
                 key;
             <span class="keyword">for</span> (; i &lt; l; i += <span class="number">1</span>) {
-                key = data.variable[i];
-                v = v[key];
+                key = data.variable[i];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>Handle Funciton-Variable mixture</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="keyword">typeof</span> key !== <span class="string">'string'</span> &amp;&amp; key.constructor === Beard.AST.FuncNode) {
+                    v = <span class="keyword">this</span>[key.type](key);
+                } <span class="keyword">else</span> {
+                    v = v[key];
+                }
                 <span class="keyword">if</span> (<span class="keyword">typeof</span> v === <span class="string">'undefined'</span>) {
                     <span class="keyword">if</span> (data.def) {
                         v = <span class="keyword">this</span>[data.def.type](data.def);
@@ -1977,14 +2064,30 @@ FIXME: Change name?</p>
                 }
             }
             <span class="keyword">return</span> v;
-        },
-        func: <span class="keyword">function</span>(func) {
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <p>Compile function call</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        func: <span class="keyword">function</span>(func) {
             <span class="keyword">var</span> i = <span class="number">0</span>,
                 l = func.func.length,
-                fn = <span class="keyword">this</span>.options.variables,
+                parent,
+                fn = parent = <span class="keyword">this</span>.options.variables,
                 key;
             <span class="keyword">for</span> (; i &lt; l; i += <span class="number">1</span>) {
                 key = func.func[i];
+                parent = fn;
                 fn = fn[key];
                 <span class="keyword">if</span> (<span class="keyword">typeof</span> fn === <span class="string">'undefined'</span>) {
                     <span class="keyword">if</span> (func.def) {
@@ -1992,27 +2095,99 @@ FIXME: Change name?</p>
                     }
                     <span class="keyword">return</span>;
                 }
-            }
-            <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>.options.variables, <span class="keyword">this</span>.args(func.args));
-        },
-        args: <span class="keyword">function</span>(args) {
-            <span class="keyword">return</span> args.map(<span class="keyword">function</span>(v) {
-                <span class="keyword">return</span> <span class="keyword">this</span>[v.type](v);
-            }, <span class="keyword">this</span>);
-        },
-        comment: <span class="keyword">function</span>() {
-            <span class="keyword">return</span> <span class="string">''</span>;
-        },
-        block: <span class="keyword">function</span>(block) {</pre></div></div>
+            }</pre></div></div>
             
         </li>
         
         
-        <li id="section-45">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p><code>parent</code> is the function&#39;s <code>this</code>:</p>
+<pre><code>data = {
+    first_name: &#39;John&#39;,
+    last_name: &#39;Doe&#39;,
+    full_name: function () {
+        return this.first_name + &#39; &#39; + this.last_name;
+        // return &quot;John Doe&quot;
+    },
+    nested: {
+        first_name: &#39;Robert&#39;,
+        last_name: &#39;Roe&#39;,
+        full_name: function () {
+            return this.first_name + &#39; &#39; + this.last_name;
+            // return &quot;Robert Roe&quot;
+        }
+    }
+}</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">return</span> fn.apply(parent, <span class="keyword">this</span>.args(func.args));
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Compile function&#39;s arguments</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        args: <span class="keyword">function</span>(args) {
+            <span class="keyword">return</span> args.map(<span class="keyword">function</span>(v) {
+                <span class="keyword">return</span> <span class="keyword">this</span>[v.type](v);
+            }, <span class="keyword">this</span>);
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p>Compile comment</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        comment: <span class="keyword">function</span>() {
+            <span class="keyword">return</span> <span class="string">''</span>;
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>Compile block instructions code</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        block: <span class="keyword">function</span>(block) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>TODO: This is ugly</p>
 
@@ -2048,9 +2223,63 @@ FIXME: Change name?</p>
                     }
                 }
             }
-        },
-        STRING: <span class="keyword">function</span>(string) {
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>Compile string parameter</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        STRING: <span class="keyword">function</span>(string) {
             <span class="keyword">return</span> string.string;
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Compile integer parameter</p>
+<p>If <code>strict</code> is <code>True</code>, it returns the <code>Number</code> value,
+otherwise, its <code>String</code> representation. The default is <code>False</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        INTEGER: <span class="keyword">function</span>(integer, strict) {
+            strict = !! strict;
+            <span class="keyword">return</span> strict ? integer.stringModeValue : integer.integer;
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <p>Compile boolean parameter</p>
+<p>If <code>strict</code> is <code>True</code>, it returns the <code>Boolean</code> value,
+otherwise, its <code>String</code> representation. The default is <code>False</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        BOOLEAN: <span class="keyword">function</span>(bool, strict) {
+            strict = !! strict;
+            <span class="keyword">return</span> strict ? bool.stringModeValue : bool.bool;
         }
     };
     Beard.parse = <span class="keyword">function</span>(input) {

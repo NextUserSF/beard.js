@@ -23,6 +23,7 @@ Compiler.prototype = {
         return this;
     },
 
+    // Compile element
     element: function (element) {
         if (this.options.elements[element.id]) {
             return Beard.evaluateElement(this.options.elements[element.id], this.options);
@@ -31,10 +32,12 @@ Compiler.prototype = {
         return "Element " + element.id + " not found";
     },
 
+    // Compile content node
     content: function (string) {
         return string.string;
     },
 
+    // Compile data variable tag
     data: function (data) {
         var i = 0,
             l = data.variable.length,
@@ -43,7 +46,12 @@ Compiler.prototype = {
 
         for (; i < l; i += 1) {
             key = data.variable[i];
-            v = v[key];
+            // Handle Funciton-Variable mixture
+            if (typeof key !== 'string' && key.constructor === Beard.AST.FuncNode) {
+                v = this[key.type](key);
+            } else {
+                v = v[key];
+            }
 
             if (typeof v === 'undefined') {
                 if (data.def) {
@@ -58,14 +66,17 @@ Compiler.prototype = {
         return v;
     },
 
+    // Compile function call
     func: function (func) {
         var i = 0,
             l = func.func.length,
-            fn = this.options.variables,
+            parent,
+            fn = parent = this.options.variables,
             key;
 
         for (; i < l; i += 1) {
             key = func.func[i];
+            parent = fn;
             fn = fn[key];
 
             if (typeof fn === 'undefined') {
@@ -77,19 +88,40 @@ Compiler.prototype = {
             }
         }
 
-        return fn.apply(this.options.variables, this.args(func.args));
+        // `parent` is the function's `this`:
+        //
+        //     data = {
+        //         first_name: 'John',
+        //         last_name: 'Doe',
+        //         full_name: function () {
+        //             return this.first_name + ' ' + this.last_name;
+        //             // return "John Doe"
+        //         },
+        //         nested: {
+        //             first_name: 'Robert',
+        //             last_name: 'Roe',
+        //             full_name: function () {
+        //                 return this.first_name + ' ' + this.last_name;
+        //                 // return "Robert Roe"
+        //             }
+        //         }
+        //     }
+        return fn.apply(parent, this.args(func.args));
     },
 
+    // Compile function's arguments
     args: function (args) {
         return args.map(function (v) {
             return this[v.type](v);
         }, this);
     },
 
+    // Compile comment
     comment: function () {
         return '';
     },
 
+    // Compile block instructions code
     block: function (block) {
         // TODO: This is ugly
         if (block.beard[0] === 'foreach') {
@@ -124,7 +156,28 @@ Compiler.prototype = {
         }
     },
 
+    // Compile string parameter
     STRING: function (string) {
         return string.string;
+    },
+
+    // Compile integer parameter
+    //
+    // If `strict` is `True`, it returns the `Number` value,
+    // otherwise, its `String` representation. The default is `False`.
+    INTEGER: function (integer, strict) {
+        strict = !!strict;
+
+        return strict ? integer.stringModeValue : integer.integer;
+    },
+
+    // Compile boolean parameter
+    //
+    // If `strict` is `True`, it returns the `Boolean` value,
+    // otherwise, its `String` representation. The default is `False`.
+    BOOLEAN: function (bool, strict) {
+        strict = !!strict;
+
+        return strict ? bool.stringModeValue : bool.bool;
     }
 };

@@ -54,3 +54,9 @@ Beard.AST.IntegerNode = function (integer) {
     this.integer = integer;
     this.stringModeValue = Number(integer);
 };
+
+Beard.AST.BooleanNode = function (bool) {
+    this.type = 'BOOLEAN';
+    this.bool = bool;
+    this.stringModeValue = bool === 'true';
+};

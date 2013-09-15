@@ -35,6 +35,7 @@ variableTag: OPEN_VARIABLE var CLOSE -> $2
 
 var: segments -> new yy.DataNode($1)
    | segments ALT param -> new yy.DataNode($1, $3)
+   | func SEP segments -> new yy.DataNode([$1].concat($3))
    ;
 
 func: segments OP args CP -> new yy.FuncNode($1, $3)
