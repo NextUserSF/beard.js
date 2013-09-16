@@ -111,13 +111,117 @@ describe 'Data Tag', ->
 
       expect(ret).toEqual 'Function call'
 
-  describe 'Plain Function-Value mixture', ->
+  describe 'Plain Function-Variable mixture', ->
     it 'should return correct value', ->
       tpl.set '<%= func().variable %>'
       tpl.addVariable 'func', -> variable: 'Variable'
       ret = tpl.render()
 
       expect(ret).toEqual 'Variable'
+
+    it 'should return default value', ->
+      tpl.set '<%= func().variable | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Plain Function-Variable mixture (Arguments)', ->
+    it 'should return correct value', ->
+      tpl.set '<%= func("variable", "Variable").variable %>'
+      tpl.addVariable 'func', (x, y) -> o = {}; o[x] = y; o
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Variable'
+
+    it 'should return default value', ->
+      tpl.set '<%= func("variable", "Variable").variable | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Nested Function-Variable mixture', ->
+    it 'should return correct value', ->
+      tpl.set '<%= nested.func().nested.variable %>'
+      tpl.addVariable 'nested', func: -> nested: variable: 'Variable'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Variable'
+
+    it 'should return default value', ->
+      tpl.set '<%= nested.func().nested.variable | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Nested Function-Variable mixture (Arguments)', ->
+    it 'should return correct value', ->
+      tpl.set '<%= nested.func("nested", "variable", "Variable").nested.variable %>'
+      tpl.addVariable 'nested', func: (x, y, z) -> o = {}; o[x] = {}; o[x][y] = z; o
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Variable'
+
+    it 'should return default value', ->
+      tpl.set '<%= nested.func("nested", "varialbe", "Variable").nested.variable | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Plain Function-Function mixture', ->
+    it 'should return correct value', ->
+      tpl.set '<%= func().func() %>'
+      tpl.addVariable 'func', -> func: -> 'Function call'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Function call'
+
+    it 'should return default value', ->
+      tpl.set '<%= func().func() | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Plain Function-Function mixture (Arguments)', ->
+    it 'should return correct value', ->
+      tpl.set '<%= func("Function").func("call") %>'
+      tpl.addVariable 'func', (x) -> func: (y) -> "#{x} #{y}"
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Function call'
+
+    it 'should return default value', ->
+      tpl.set '<%= func("Function").func("call") | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Nested Function-Function mixture', ->
+    it 'should return correct value', ->
+      tpl.set '<%= nested.func().nested.func() %>'
+      tpl.addVariable 'nested', func: -> nested: func: -> 'Function call'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Function call'
+
+    it 'should return default value', ->
+      tpl.set '<%= nested.func().nested.func() | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
+
+  describe 'Nested Function-Function mixture (Arguments)', ->
+    it 'should return correct value', ->
+      tpl.set '<%= nested.func("Function").nested.func("call") %>'
+      tpl.addVariable 'nested', func: (x) -> nested: func: (y) -> "#{x} #{y}"
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Function call'
+
+    it 'should return default value', ->
+      tpl.set '<%= nested.func("Function").nested.func("call") | "Default" %>'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
 
   describe 'Default parameters', ->
     it 'should return String', ->

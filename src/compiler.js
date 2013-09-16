@@ -77,7 +77,12 @@ Compiler.prototype = {
         for (; i < l; i += 1) {
             key = func.func[i];
             parent = fn;
-            fn = fn[key];
+            // Handle Funciton-Variable mixture
+            if (typeof key !== 'string' && key.constructor === Beard.AST.FuncNode) {
+                fn = this[key.type](key);
+            } else {
+                fn = fn[key];
+            }
 
             if (typeof fn === 'undefined') {
                 if (func.def) {

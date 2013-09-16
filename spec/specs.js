@@ -124,8 +124,8 @@
         return expect(ret).toEqual('Function call');
       });
     });
-    describe('Plain Function-Value mixture', function() {
-      return it('should return correct value', function() {
+    describe('Plain Function-Variable mixture', function() {
+      it('should return correct value', function() {
         tpl.set('<%= func().variable %>');
         tpl.addVariable('func', function() {
           return {
@@ -134,6 +134,155 @@
         });
         ret = tpl.render();
         return expect(ret).toEqual('Variable');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= func().variable | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Plain Function-Variable mixture (Arguments)', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= func("variable", "Variable").variable %>');
+        tpl.addVariable('func', function(x, y) {
+          var o;
+          o = {};
+          o[x] = y;
+          return o;
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Variable');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= func("variable", "Variable").variable | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Nested Function-Variable mixture', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= nested.func().nested.variable %>');
+        tpl.addVariable('nested', {
+          func: function() {
+            return {
+              nested: {
+                variable: 'Variable'
+              }
+            };
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Variable');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= nested.func().nested.variable | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Nested Function-Variable mixture (Arguments)', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= nested.func("nested", "variable", "Variable").nested.variable %>');
+        tpl.addVariable('nested', {
+          func: function(x, y, z) {
+            var o;
+            o = {};
+            o[x] = {};
+            o[x][y] = z;
+            return o;
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Variable');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= nested.func("nested", "varialbe", "Variable").nested.variable | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Plain Function-Function mixture', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= func().func() %>');
+        tpl.addVariable('func', function() {
+          return {
+            func: function() {
+              return 'Function call';
+            }
+          };
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= func().func() | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Plain Function-Function mixture (Arguments)', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= func("Function").func("call") %>');
+        tpl.addVariable('func', function(x) {
+          return {
+            func: function(y) {
+              return "" + x + " " + y;
+            }
+          };
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= func("Function").func("call") | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Nested Function-Function mixture', function() {
+      it('should return correct value', function() {
+        tpl.set('<%= nested.func().nested.func() %>');
+        tpl.addVariable('nested', {
+          func: function() {
+            return {
+              nested: {
+                func: function() {
+                  return 'Function call';
+                }
+              }
+            };
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= nested.func().nested.func() | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
+      });
+    });
+    describe('Nested Function-Function mixture (Arguments)', function() {
+      it('should return correct value', function() {
+        tpl.set('<%=nested.func("Function").nested.func("call")%>');
+        tpl.addVariable('nested', {
+          func: function(x) {
+            return {
+              nested: {
+                func: function(y) {
+                  return "" + x + " " + y;
+                }
+              }
+            };
+          }
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('Function call');
+      });
+      return it('should return default value', function() {
+        tpl.set('<%= nested.func("Function").nested.func("call") | "Default" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
       });
     });
     return describe('Default parameters', function() {
