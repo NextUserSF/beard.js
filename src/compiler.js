@@ -128,37 +128,23 @@ Compiler.prototype = {
 
     // Compile block instructions code
     block: function (block) {
-        // TODO: This is ugly
-        if (block.beard[0] === 'foreach') {
-            var v = this.getData(block.beard[1]),
-                l,
-                key,
-                value,
-                options,
-                env;
-            if (v instanceof Array) {
-                l = v.length;
-                for (key = 0; key < l; key += 1) {
-                    value = v[key];
-                    options = this.options;
-                    options.variables.key = key;
-                    options.variables.value = value;
-                    env = new Compiler().compile(block.program, options);
-                    this.result = this.result.concat(env.result);
-                }
-            } else if (v instanceof Object) {
-                for (key in v) {
-                    if (v.hasOwnProperty(key)) {
-                        value = v[key];
-                        options = this.options;
-                        options.variables.key = key;
-                        options.variables.value = value;
-                        env = new Compiler().compile(block.program, options);
-                        this.result = this.result.concat(env.result);
-                    }
-                }
+        var helper,
+            data,
+            program;
+
+        // Compile helper and its arguments or data
+        data = block.helper.map(function (item) {
+            if (typeof item !== 'string') {
+                return this[item.type](item);
+            } else {
+                return item;
             }
-        }
+        }, this);
+
+        helper = data.shift();
+        program = block.program;
+
+        return Beard.BlockHelpers[helper](data, program, this.options);
     },
 
     // Compile string parameter

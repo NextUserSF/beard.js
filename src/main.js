@@ -40,6 +40,9 @@
     // Beard.Compiler
     // --------------
 #include "compiler.js"
+    // Helpers
+    // -------
+#include "helpers.js"
 
     Beard.parse = function (input) {
         Beard.Parser.yy = Beard.AST;
@@ -52,6 +55,7 @@
             env = new Compiler().compile(ast, options);
         return env.result.join('');
     };
+
     Beard.evaluateElement = function (input, options) {
         return Beard.compile(input, options);
     };

@@ -31,9 +31,12 @@ Beard.AST.IdNode = function (id) {
     this.id = id;
 };
 
-Beard.AST.BlockNode = function (beard, program, close) {
+Beard.AST.BlockNode = function (helper, program, close) {
+    if (helper[0] !== close) {
+        throw new Error(helper[0] + " doesn't match " + close);
+    }
     this.type = 'block';
-    this.beard = beard;
+    this.helper = helper;
     this.program = program;
 };
 

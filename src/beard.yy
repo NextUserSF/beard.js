@@ -20,10 +20,10 @@ statement: openBlock program closeBlock -> new yy.BlockNode($1, $2, $3)
          | COMMENT -> new yy.CommentNode($1)
          ;
 
-openBlock: FOREACH segments CLOSE -> [$1, new yy.DataNode($2)]
+openBlock: OPEN ID segments CLOSE -> [$2, new yy.DataNode($3)]
          ;
 
-closeBlock: ENDFOREACH -> $1
+closeBlock: END_BLOCK -> $1
           ;
 
 elementTag: OPEN_ELEMENT ID CLOSE -> $2
