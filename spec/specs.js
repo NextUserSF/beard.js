@@ -264,7 +264,7 @@
     });
     describe('Nested Function-Function mixture (Arguments)', function() {
       it('should return correct value', function() {
-        tpl.set('<%=nested.func("Function").nested.func("call")%>');
+        tpl.set('<%= nested.func("Function").nested.func("call") %>');
         tpl.addVariable('nested', {
           func: function(x) {
             return {
@@ -318,6 +318,121 @@
     });
     return it('should return nothing', function() {
       return expect(ret).toEqual('');
+    });
+  });
+
+  describe('Element Tag', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      return tpl = new Beard();
+    });
+    afterEach(function() {
+      return tpl = null;
+    });
+    describe('Plain Element', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%@ element %>');
+        tpl.addElement('element', 'Element');
+        ret = tpl.render();
+        return expect(ret).toEqual('Element');
+      });
+    });
+    describe('Element with Variable', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%@ element %>');
+        tpl.addElement('element', '<%= variable %>');
+        tpl.addVariable('variable', 'Variable');
+        ret = tpl.render();
+        return expect(ret).toEqual('Variable');
+      });
+    });
+    return describe('Element with Element', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%@ element %>');
+        tpl.addElement('element', '<%@ another_element %>');
+        tpl.addElement('another_element', 'Element');
+        ret = tpl.render();
+        return expect(ret).toEqual('Element');
+      });
+    });
+  });
+
+  describe('Block Helpers', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      return tpl = new Beard();
+    });
+    afterEach(function() {
+      return tpl = null;
+    });
+    describe('Foreach Iterator (Array)', function() {
+      beforeEach(function() {
+        return tpl.addVariable('planets', ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']);
+      });
+      it('should return correct values', function() {
+        tpl.set('<% foreach planets %>Hello <%= value %> <% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Hello Mercury Hello Venus Hello Earth Hello Mars Hello Jupiter Hello Saturn Hello Uranus Hello Neptune ');
+      });
+      it('should return correct keys', function() {
+        tpl.set('<% foreach planets %><%= key %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('01234567');
+      });
+      return it('should return correct keys and values', function() {
+        tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('0Mercury1Venus2Earth3Mars4Jupiter5Saturn6Uranus7Neptune');
+      });
+    });
+    describe('Foreach Iterator (Object)', function() {
+      beforeEach(function() {
+        return tpl.addVariable('planets', {
+          me: 'Mercury',
+          ve: 'Venus',
+          ea: 'Earth',
+          ma: 'Mars',
+          ju: 'Jupiter',
+          sa: 'Saturn',
+          ur: 'Uranus',
+          ne: 'Neptune'
+        });
+      });
+      it('should return correct values', function() {
+        tpl.set('<% foreach planets %><%= value %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('MercuryVenusEarthMarsJupiterSaturnUranusNeptune');
+      });
+      it('should return correct keys', function() {
+        tpl.set('<% foreach planets%><%= key %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('meveeamajusaurne');
+      });
+      return it('should return correct keys and values', function() {
+        tpl.set('<% foreach planets%><%= key %><%= value %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('meMercuryveVenuseaEarthmaMarsjuJupitersaSaturnurUranusneNeptune');
+      });
+    });
+    describe('Foreach Iterator (No Data)', function() {
+      return it('should return nothing', function() {
+        tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('');
+      });
+    });
+    return describe('Foreach Iterator (Invalid Data)', function() {
+      return it('should throw an error', function() {
+        tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
+        tpl.addVariable('planets', 1024);
+        return expect(function() {
+          return tpl.render();
+        }).toThrow();
+      });
     });
   });
 
