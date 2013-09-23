@@ -660,6 +660,36 @@
             this.debugMode = debugMode;
 
             return this;
+        },
+        
+        /*
+         *  Function : getPojoObjectData
+         *  
+         *  Parameters:
+         *  	a POJO object
+         *  
+         *  Return:
+         *  	Return an attribute of a POJO object
+         *  
+         *  This function only for test if a POJO object work on beard.js
+         */
+        getPojoObjectData: function(pojoObj) {
+        	return pojoObj.data;
+        },
+        
+        /*
+         *  Function : getFirstPOJOObject
+         *  
+         *  Parameters:
+         *  	a list POJO object
+         *  
+         *  Return:
+         *  	Return first element of a POJO object list
+         *  
+         *  This function only for test if a POJO object list work on beard.js
+         */
+        getFirstPOJOObject: function(listPojoObject) {
+        	return listPojoObject[0].data;
         }
 
     };
