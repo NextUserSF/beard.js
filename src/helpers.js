@@ -66,6 +66,12 @@ Beard.registerHelper('if', function (data, program, options) {
 #endif
         env = new Compiler().compile(program, options);
         result = env.result;
+    } else {
+#ifdef DEBUG
+        console.log('Helper IF: Negative test');
+#endif
+        env = new Compiler().compile(program.inverse, options);
+        result = env.result;
     }
 
     return result.join('');

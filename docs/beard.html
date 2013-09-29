@@ -2456,6 +2456,9 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         <span class="keyword">if</span> (data[<span class="number">0</span>] == data[<span class="number">1</span>]) {
             env = <span class="keyword">new</span> Compiler().compile(program, options);
             result = env.result;
+        } <span class="keyword">else</span> {
+            env = <span class="keyword">new</span> Compiler().compile(program.inverse, options);
+            result = env.result;
         }
         <span class="keyword">return</span> result.join(<span class="string">''</span>);
     }, <span class="literal">true</span>);
