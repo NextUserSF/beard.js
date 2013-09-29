@@ -12,6 +12,9 @@ Beard.registerHelper = function (name, func, is_block) {
 
 // ### Core Helpers
 Beard.registerHelper('foreach', function (data, program, options) {
+#ifdef DEBUG
+    console.log('Helper FOREACH:', arguments);
+#endif
     var key,
         value,
         l,
@@ -19,7 +22,7 @@ Beard.registerHelper('foreach', function (data, program, options) {
         env,
         result = [];
 
-    data = data[0] || {};
+    data = data || {};
     // Iterate through the array
     if (data instanceof Array) {
         l = data.length;
@@ -45,6 +48,24 @@ Beard.registerHelper('foreach', function (data, program, options) {
         }
     } else {
         throw new Error('Data should be either Object or Array');
+    }
+
+    return result.join('');
+}, true);
+
+Beard.registerHelper('if', function (data, program, options) {
+#ifdef DEBUG
+    console.log('Helper IF:', arguments);
+#endif
+    var env,
+        result = [];
+
+    if (data[0] == data[1]) {
+#ifdef DEBUG
+        console.log('Helper IF: Positive test');
+#endif
+        env = new Compiler().compile(program, options);
+        result = env.result;
     }
 
     return result.join('');

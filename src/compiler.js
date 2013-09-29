@@ -44,6 +44,9 @@ Compiler.prototype = {
             v = this.options.variables,
             key;
 
+#ifdef DEBUG
+        console.log('Compiler.data(): data:', data);
+#endif
         for (; i < l; i += 1) {
             key = data.variable[i];
             // Handle Funciton-Variable mixture
@@ -63,6 +66,9 @@ Compiler.prototype = {
             }
         }
 
+#ifdef DEBUG
+        console.log('Compiler.data(): return value:', v);
+#endif
         return v;
     },
 
@@ -136,15 +142,31 @@ Compiler.prototype = {
         data = block.helper.map(function (item) {
             if (typeof item !== 'string') {
                 return this[item.type](item);
-            } else {
-                return item;
             }
+            return item;
         }, this);
 
-        helper = data.shift();
+        helper = data[0];
+        data = data[1];
         program = block.program;
 
+#ifdef DEBUG
+        console.log('Compiler.block(): Helper:', helper, 'Arguments:', data, program, this.options);
+#endif
         return Beard.BlockHelpers[helper](data, program, this.options);
+    },
+
+    // Compile hash
+    hash: function (hash) {
+#ifdef DEBUG
+        console.log('Compiler.hash():', hash);
+#endif
+        return hash.pairs.map(function (item) {
+            if (typeof item !== 'string') {
+                return this[item.type](item, true);
+            }
+            return item;
+        }, this);
     },
 
     // Compile string parameter

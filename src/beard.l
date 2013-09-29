@@ -26,6 +26,7 @@ ID  [a-zA-Z_][a-zA-Z0-9_]*
 <beard>"<%#"                                this.popState(); this.begin('com');
 <beard>"<%#"[\s\S]*?"%>"                    strip(3,5); this.popState(); return 'COMMENT';
 <beard>"<% end"{ID}" %>"                    strip(6,9); this.popState(); return 'END_BLOCK';
+<beard>"<%"\s*"else"                        return 'OPEN_INVERSE';
 <beard>"<%"                                 return 'OPEN';
 
 <beard>"|"                                  return 'ALT';
@@ -33,6 +34,7 @@ ID  [a-zA-Z_][a-zA-Z0-9_]*
 <beard>","                                  return 'COMMA';
 <beard>"("                                  return 'OP';
 <beard>")"                                  return 'CP';
+<beard>"="                                  return 'EQUALS';
 <beard>\s+                                  /* ignore whitespace */
 <beard>"%>"                                 this.popState(); return 'CLOSE';
 <beard>'"'("\\"["]|[^"])*'"'                yytext = strip(1,2).replace(/\\"/g,'"'); return 'STRING';

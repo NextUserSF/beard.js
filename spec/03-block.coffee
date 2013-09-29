@@ -49,13 +49,13 @@ describe 'Block Helpers', ->
       expect(ret).toEqual 'MercuryVenusEarthMarsJupiterSaturnUranusNeptune'
 
     it 'should return correct keys', ->
-      tpl.set '<% foreach planets%><%= key %><% endforeach %>'
+      tpl.set '<% foreach planets %><%= key %><% endforeach %>'
       ret = tpl.render()
 
       expect(ret).toEqual 'meveeamajusaurne'
 
     it 'should return correct keys and values', ->
-      tpl.set '<% foreach planets%><%= key %><%= value %><% endforeach %>'
+      tpl.set '<% foreach planets %><%= key %><%= value %><% endforeach %>'
       ret = tpl.render()
 
       expect(ret).toEqual 'meMercuryveVenuseaEarthmaMarsjuJupitersaSaturnurUranusneNeptune'
@@ -73,3 +73,18 @@ describe 'Block Helpers', ->
       tpl.addVariable 'planets', 1024
 
       expect(-> tpl.render()).toThrow()
+
+  describe 'Tests', ->
+    it 'should return correct value', ->
+      tpl.set '<% if v1 = true %>True<% endif %>'
+      tpl.addVariable 'v1', true
+      ret = tpl.render()
+
+      expect(ret).toEqual 'True'
+
+    it 'should return alternate value', ->
+      tpl.set '<% if v1 = true%>True<% else %>False<% endif %>'
+      tpl.addVariable 'v1', false
+      ret = tpl.render()
+
+      expect(ret).toEqual 'False'

@@ -408,12 +408,12 @@
         return expect(ret).toEqual('MercuryVenusEarthMarsJupiterSaturnUranusNeptune');
       });
       it('should return correct keys', function() {
-        tpl.set('<% foreach planets%><%= key %><% endforeach %>');
+        tpl.set('<% foreach planets %><%= key %><% endforeach %>');
         ret = tpl.render();
         return expect(ret).toEqual('meveeamajusaurne');
       });
       return it('should return correct keys and values', function() {
-        tpl.set('<% foreach planets%><%= key %><%= value %><% endforeach %>');
+        tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
         ret = tpl.render();
         return expect(ret).toEqual('meMercuryveVenuseaEarthmaMarsjuJupitersaSaturnurUranusneNeptune');
       });
@@ -425,13 +425,27 @@
         return expect(ret).toEqual('');
       });
     });
-    return describe('Foreach Iterator (Invalid Data)', function() {
+    describe('Foreach Iterator (Invalid Data)', function() {
       return it('should throw an error', function() {
         tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
         tpl.addVariable('planets', 1024);
         return expect(function() {
           return tpl.render();
         }).toThrow();
+      });
+    });
+    return describe('Tests', function() {
+      it('should return correct value', function() {
+        tpl.set('<% if v1 = true %>True<% endif %>');
+        tpl.addVariable('v1', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.set('<% if v1 = true%>True<% else %>False<% endif %>');
+        tpl.addVariable('v1', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
       });
     });
   });

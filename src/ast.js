@@ -1,8 +1,11 @@
 Beard.AST = {};
 
-Beard.AST.ProgramNode = function (statements) {
+Beard.AST.ProgramNode = function (statements, inverse) {
     this.type = 'program';
     this.statements = statements;
+    if (inverse) {
+        this.inverse = new Beard.AST.ProgramNode(inverse);
+    }
 };
 
 Beard.AST.ElementNode = function (id) {
@@ -62,4 +65,9 @@ Beard.AST.BooleanNode = function (bool) {
     this.type = 'BOOLEAN';
     this.bool = bool;
     this.stringModeValue = bool === 'true';
+};
+
+Beard.AST.HashNode = function (pairs) {
+    this.type = 'hash';
+    this.pairs = pairs;
 };

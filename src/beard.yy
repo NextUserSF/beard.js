@@ -5,9 +5,16 @@
 root: statements EOF { return new yy.ProgramNode($1); }
     ;
 
-program: statements -> new yy.ProgramNode($1)
+program: simpleInverse statements -> new yy.ProgramNode([], $2)
+       | statements simpleInverse statements -> new yy.ProgramNode($1, $3)
+       | statements simpleInverse -> new yy.ProgramNode($1, [])
+       | statements -> new yy.ProgramNode($1)
+       | simpleInverse -> new yy.ProgramNode([])
        | "" -> new yy.ProgramNode([])
        ;
+
+simpleInverse: OPEN_INVERSE CLOSE {}
+             ;
 
 statements: statement -> [$1]
           | statements statement { $1.push($2); $$ = $1; }
@@ -21,7 +28,14 @@ statement: openBlock program closeBlock -> new yy.BlockNode($1, $2, $3)
          ;
 
 openBlock: OPEN ID segments CLOSE -> [$2, new yy.DataNode($3)]
+         | OPEN ID hash CLOSE -> [$2, $3]
          ;
+
+hash: hashSegment -> new yy.HashNode($1)
+    ;
+
+hashSegment: segments EQUALS param -> [new yy.DataNode($1), $3]
+           ;
 
 closeBlock: END_BLOCK -> $1
           ;
