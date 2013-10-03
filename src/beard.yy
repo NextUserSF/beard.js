@@ -35,6 +35,7 @@ hash: hashSegment -> new yy.HashNode($1)
     ;
 
 hashSegment: segments compOperator param -> [new yy.DataNode($1), $2, $3]
+           | param compOperator segments -> [$1, $2, new yy.DataNode($3)]
            | segments compOperator segments -> [new yy.DataNode($1), $2, new yy.DataNode($3)]
            ;
 
