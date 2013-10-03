@@ -359,7 +359,7 @@
     });
   });
 
-  describe('Block Helpers', function() {
+  describe('Foreach Helper', function() {
     var ret, tpl;
     tpl = null;
     ret = null;
@@ -369,7 +369,7 @@
     afterEach(function() {
       return tpl = null;
     });
-    describe('Foreach Iterator (Array)', function() {
+    describe('Array', function() {
       beforeEach(function() {
         return tpl.addVariable('planets', ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']);
       });
@@ -389,7 +389,7 @@
         return expect(ret).toEqual('0Mercury1Venus2Earth3Mars4Jupiter5Saturn6Uranus7Neptune');
       });
     });
-    describe('Foreach Iterator (Object)', function() {
+    describe('Object', function() {
       beforeEach(function() {
         return tpl.addVariable('planets', {
           me: 'Mercury',
@@ -418,14 +418,14 @@
         return expect(ret).toEqual('meMercuryveVenuseaEarthmaMarsjuJupitersaSaturnurUranusneNeptune');
       });
     });
-    describe('Foreach Iterator (No Data)', function() {
+    describe('No Data', function() {
       return it('should return nothing', function() {
         tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
         ret = tpl.render();
         return expect(ret).toEqual('');
       });
     });
-    describe('Foreach Iterator (Invalid Data)', function() {
+    return describe('Invalid Data', function() {
       return it('should throw an error', function() {
         tpl.set('<% foreach planets %><%= key %><%= value %><% endforeach %>');
         tpl.addVariable('planets', 1024);
@@ -434,16 +434,272 @@
         }).toThrow();
       });
     });
-    return describe('Tests', function() {
+  });
+
+  describe('If-Else Helper', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      return tpl = new Beard();
+    });
+    afterEach(function() {
+      return tpl = null;
+    });
+    describe('Equals = (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 = true %>True<% else %>False<% endif %>');
+      });
       it('should return correct value', function() {
-        tpl.set('<% if v1 = true %>True<% endif %>');
+        tpl.addVariable('v1', 1);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 0);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Equals = (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 = v2 %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 1);
+        tpl.addVariable('v2', 1);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 1);
+        tpl.addVariable('v2', 0);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Equals == (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 == true %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 1);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 0);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Equals == (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 == v2 %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 1);
+        tpl.addVariable('v2', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 1);
+        tpl.addVariable('v2', 0);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Equals === (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 === true %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
         tpl.addVariable('v1', true);
         ret = tpl.render();
         return expect(ret).toEqual('True');
       });
       return it('should return alternate value', function() {
-        tpl.set('<% if v1 = true%>True<% else %>False<% endif %>');
+        tpl.addVariable('v1', 1);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Equals === (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 === v2 %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', true);
+        tpl.addVariable('v2', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 1);
+        tpl.addVariable('v2', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('Greater than (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 > 512 %>Greater<% else %>Lesser<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 1024);
+        ret = tpl.render();
+        return expect(ret).toEqual('Greater');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 256);
+        ret = tpl.render();
+        return expect(ret).toEqual('Lesser');
+      });
+    });
+    describe('Greater than (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 > v2 %>Greater<% else %>Lesser<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 1024);
+        tpl.addVariable('v2', 512);
+        ret = tpl.render();
+        return expect(ret).toEqual('Greater');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 256);
+        tpl.addVariable('v2', 512);
+        ret = tpl.render();
+        return expect(ret).toEqual('Lesser');
+      });
+    });
+    describe('Lesser than (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 < 512 %>Lesser<% else %>Greater<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 256);
+        ret = tpl.render();
+        return expect(ret).toEqual('Lesser');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 1024);
+        ret = tpl.render();
+        return expect(ret).toEqual('Greater');
+      });
+    });
+    describe('Lesser than (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 < v2 %>Lesser<% else %>Greater<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', 256);
+        tpl.addVariable('v2', 512);
+        ret = tpl.render();
+        return expect(ret).toEqual('Lesser');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', 1024);
+        tpl.addVariable('v2', 512);
+        ret = tpl.render();
+        return expect(ret).toEqual('Greater');
+      });
+    });
+    describe('AND (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 && true %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
         tpl.addVariable('v1', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('AND (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 && v2 %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', true);
+        tpl.addVariable('v2', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', false);
+        tpl.addVariable('v2', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('OR (variable — parameter)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 || false %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    describe('OR (variable — variable)', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 || v2 %>True<% else %>False<% endif %>');
+      });
+      it('should return correct value', function() {
+        tpl.addVariable('v1', true);
+        tpl.addVariable('v2', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      return it('should return alternate value', function() {
+        tpl.addVariable('v1', false);
+        tpl.addVariable('v2', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+    });
+    return describe('Truthy/Falsy conditions', function() {
+      beforeEach(function() {
+        return tpl.set('<% if v1 %>True<% else %>False<% endif %>');
+      });
+      it('should accept boolean true', function() {
+        tpl.addVariable('v1', true);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      it('should accept boolean false', function() {
+        tpl.addVariable('v1', false);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+      it('should accept integer 1', function() {
+        tpl.addVariable('v1', 1);
+        ret = tpl.render();
+        return expect(ret).toEqual('True');
+      });
+      it('should accept integer 0', function() {
+        tpl.addVariable('v1', 0);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+      it('should accept null', function() {
+        tpl.addVariable('v1', null);
+        ret = tpl.render();
+        return expect(ret).toEqual('False');
+      });
+      return it('should accept undefined', function() {
         ret = tpl.render();
         return expect(ret).toEqual('False');
       });

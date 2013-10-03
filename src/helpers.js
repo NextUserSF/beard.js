@@ -1,3 +1,5 @@
+#define COMPOPERATOR /^(={1,3}|<|>|&&|\|\|)$/
+
 Beard.BlockHelpers = Beard.Helpers = {};
 
 Beard.registerHelper = function (name, func, is_block) {
@@ -58,9 +60,40 @@ Beard.registerHelper('if', function (data, program, options) {
     console.log('Helper IF:', arguments);
 #endif
     var env,
-        result = [];
+        result = [],
+        positive;
 
-    if (data[0] == data[1]) {
+    if (typeof data === 'object' &&
+        data instanceof Array &&
+        data.length === 3
+        && COMPOPERATOR.test(data[1])) {
+            // We've got hash
+            switch (data[1]) {
+                case '=':
+                case '==':
+                    positive = data[0] == data[2];
+                    break;
+                case '===':
+                    positive = data[0] === data[2];
+                    break;
+                case '<':
+                    positive = data[0] < data[2];
+                    break;
+                case '>':
+                    positive = data[0] > data[2];
+                    break;
+                case '&&':
+                    positive = data[0] && data[2];
+                    break;
+                case '||':
+                    positive = data[0] || data[2];
+                    break;
+            }
+    } else {
+        // Otherwise, let's check if passed data is truthy/falsy
+        positive = !!data;
+    }
+    if (positive) {
 #ifdef DEBUG
         console.log('Helper IF: Positive test');
 #endif

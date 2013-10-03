@@ -29,12 +29,16 @@ ID  [a-zA-Z_][a-zA-Z0-9_]*
 <beard>"<%"\s*"else"                        return 'OPEN_INVERSE';
 <beard>"<%"                                 return 'OPEN';
 
+<beard>"||"                                 return 'OR';
 <beard>"|"                                  return 'ALT';
 <beard>"."                                  return 'SEP';
 <beard>","                                  return 'COMMA';
 <beard>"("                                  return 'OP';
 <beard>")"                                  return 'CP';
-<beard>"="                                  return 'EQUALS';
+<beard>"==="|"=="|"="                       return 'EQUALS';
+<beard>">"                                  return 'GREATER';
+<beard>"<"                                  return 'LESSER';
+<beard>"&&"                                 return 'AND';
 <beard>\s+                                  /* ignore whitespace */
 <beard>"%>"                                 this.popState(); return 'CLOSE';
 <beard>'"'("\\"["]|[^"])*'"'                yytext = strip(1,2).replace(/\\"/g,'"'); return 'STRING';

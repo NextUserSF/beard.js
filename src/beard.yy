@@ -34,8 +34,16 @@ openBlock: OPEN ID segments CLOSE -> [$2, new yy.DataNode($3)]
 hash: hashSegment -> new yy.HashNode($1)
     ;
 
-hashSegment: segments EQUALS param -> [new yy.DataNode($1), $3]
+hashSegment: segments compOperator param -> [new yy.DataNode($1), $2, $3]
+           | segments compOperator segments -> [new yy.DataNode($1), $2, new yy.DataNode($3)]
            ;
+
+compOperator: EQUALS
+            | GREATER
+            | LESSER
+            | AND
+            | OR
+            ;
 
 closeBlock: END_BLOCK -> $1
           ;
@@ -71,5 +79,4 @@ args: args COMMA param { $1.push($3); $$ = $1; }
 param: STRING -> new yy.StringNode($1)
      | INTEGER -> new yy.IntegerNode($1)
      | BOOLEAN -> new yy.BooleanNode($1)
-     | ID -> new yy.IdNode($1)
      ;
