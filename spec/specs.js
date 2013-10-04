@@ -811,4 +811,52 @@
     });
   });
 
+  describe('Get Required', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      return tpl = new Beard();
+    });
+    afterEach(function() {
+      return tpl = null;
+    });
+    describe('Variables', function() {
+      return it('should return correct object', function() {
+        var obj;
+        obj = {
+          variables: ['v1', 'v2', 'v3'],
+          elements: []
+        };
+        tpl.set('<%= v1 %><%= v2 %><%= v3 %>');
+        ret = tpl.getRequired();
+        return expect(ret).toEqual(obj);
+      });
+    });
+    describe('Elements', function() {
+      return it('should return correct object', function() {
+        var obj;
+        obj = {
+          variables: [],
+          elements: ['e1', 'e2', 'e3']
+        };
+        tpl.set('<%@ e1 %><%@ e2 %><%@ e3 %>');
+        ret = tpl.getRequired();
+        return expect(ret).toEqual(obj);
+      });
+    });
+    return describe('Elements and Variables', function() {
+      return it('should return correct object', function() {
+        var obj;
+        obj = {
+          variables: ['v1', 'v2', 'v3'],
+          elements: ['e1', 'e2', 'e3']
+        };
+        tpl.set('<%= v1 %><%@ e1 %><%= v2 %><%@ e2 %><%= v3 %><%@ e3 %>');
+        ret = tpl.getRequired();
+        return expect(ret).toEqual(obj);
+      });
+    });
+  });
+
 }).call(this);

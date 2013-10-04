@@ -49,6 +49,22 @@
         return Beard.Parser.parse(input);
     };
 
+    Beard.getRequired = function (input) {
+        var ast = Beard.parse(input);
+        return ast.statements.reduce(function (previous, current) {
+            switch (current.constructor) {
+                case Beard.AST.DataNode:
+                    previous.variables.push(current.variable[0]);
+                    break;
+                case Beard.AST.ElementNode:
+                    previous.elements.push(current.id);
+                    break;
+            }
+
+            return previous;
+        }, { variables: [], elements: [] });
+    };
+
     Beard.compile = function (input, options) {
         options = options || {};
         var ast = Beard.parse(input),

@@ -22,7 +22,8 @@ Beard.prototype = {
 
     // Returns an object containing an array of variables, and an array of elements:
     getRequired: function (tpl) {
-        // TODO: Use Parser
+        tpl = tpl || this.tpl;
+        return Beard.getRequired(tpl);
     },
 
     // Add many template elements
