@@ -859,4 +859,30 @@
     });
   });
 
+  describe('Helpers', function() {
+    var ret, tpl;
+    tpl = null;
+    ret = null;
+    beforeEach(function() {
+      return tpl = new Beard();
+    });
+    afterEach(function() {
+      return tpl = null;
+    });
+    return describe('Block Helpers', function() {
+      beforeEach(function() {
+        return Beard.registerHelper('foo', function(data, program, options) {
+          var env;
+          env = new Beard.Compiler().compile(program, options);
+          return env.result.join('', true);
+        });
+      });
+      return it('should return correct value', function() {
+        tpl.set('<% foo %>Helper<% endfoo %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Helper');
+      });
+    });
+  });
+
 }).call(this);

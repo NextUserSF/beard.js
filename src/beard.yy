@@ -29,6 +29,7 @@ statement: openBlock program closeBlock -> new yy.BlockNode($1, $2, $3)
 
 openBlock: OPEN ID segments CLOSE -> [$2, new yy.DataNode($3)]
          | OPEN ID hash CLOSE -> [$2, $3]
+         | OPEN ID CLOSE -> [$2]
          ;
 
 hash: hashSegment -> new yy.HashNode($1)
