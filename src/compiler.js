@@ -134,33 +134,35 @@ Compiler.prototype = {
 
     // Compile block instructions code
     block: function (block) {
-        var helper,
-            data,
-            program;
+        var helper = block.helper,
+            // Compile helper and its arguments or data
+            args = block.args.map(function (item) {
+                if (typeof item !== 'string') {
+                    return this[item.type](item);
+                }
+                return item;
+            }, this),
+            program = block.program;
 
-        // Compile helper and its arguments or data
-        data = block.helper.map(function (item) {
-            if (typeof item !== 'string') {
-                return this[item.type](item);
-            }
-            return item;
-        }, this);
+        return Beard.BlockHelpers[helper](args, program, this.options);
+    },
 
-        helper = data[0];
-        data = data[1];
-        program = block.program;
+    // Compile inline
+    inline: function (inline) {
+        var helper = inline.helper,
+            // Compile helper and its arguments or data
+            args = inline.args.map(function (item) {
+                if (typeof item !== 'string') {
+                    return this[item.type](item);
+                }
+                return item;
+            }, this);
 
-#ifdef DEBUG
-        console.log('Compiler.block(): Helper:', helper, 'Arguments:', data, program, this.options);
-#endif
-        return Beard.BlockHelpers[helper](data, program, this.options);
+        return Beard.Helpers[helper](args, this.options);
     },
 
     // Compile hash
     hash: function (hash) {
-#ifdef DEBUG
-        console.log('Compiler.hash():', hash);
-#endif
         return hash.pairs.map(function (item) {
             if (typeof item !== 'string') {
                 return this[item.type](item, true);

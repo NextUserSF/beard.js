@@ -39,8 +39,15 @@ Beard.AST.BlockNode = function (helper, program, close) {
         throw new Error(helper[0] + " doesn't match " + close);
     }
     this.type = 'block';
-    this.helper = helper;
+    this.helper = helper[0];
+    this.args = helper[1];
     this.program = program;
+};
+
+Beard.AST.InlineNode = function (helper) {
+    this.type = 'inline';
+    this.helper = helper[0];
+    this.args = helper[1];
 };
 
 Beard.AST.StringNode = function (string) {

@@ -13,33 +13,30 @@ Beard.registerHelper = function (name, func, is_block) {
 };
 
 // ### Core Helpers
-Beard.registerHelper('foreach', function (data, program, options) {
+Beard.registerHelper('foreach', function (args, program, options) {
 #ifdef DEBUG
-    console.log('Helper FOREACH:', arguments);
+    console.log('Helper foreach BEGIN');
+    console.log('Arguments:', arguments);
 #endif
-    var key,
+    var i = 0,
+        argc = args.length,
+        data,
+        key,
         value,
         l,
         program_options,
         env,
         result = [];
 
-    data = data || {};
-    // Iterate through the array
-    if (data instanceof Array) {
-        l = data.length;
-        for (key = 0; key < l; key++) {
-            program_options = options;
-            value = data[key];
-            program_options.variables.key = key;
-            program_options.variables.value = value;
-            env = new Compiler().compile(program, program_options);
-            result = result.concat(env.result);
+    for (; i < argc; i++) {
+        data = args[i];
+        if (!data) {
+            continue;
         }
-    } else if (data instanceof Object) {
-        for (key in data) {
-            if (data.hasOwnProperty(key)) {
-                value = data[key];
+        // Iterate through the array
+        if (data instanceof Array) {
+            l = data.length;
+            for (key = 0; key < l; key++) {
                 program_options = options;
                 value = data[key];
                 program_options.variables.key = key;
@@ -47,21 +44,39 @@ Beard.registerHelper('foreach', function (data, program, options) {
                 env = new Compiler().compile(program, program_options);
                 result = result.concat(env.result);
             }
+        } else if (data instanceof Object) {
+            for (key in data) {
+                if (data.hasOwnProperty(key)) {
+                    value = data[key];
+                    program_options = options;
+                    value = data[key];
+                    program_options.variables.key = key;
+                    program_options.variables.value = value;
+                    env = new Compiler().compile(program, program_options);
+                    result = result.concat(env.result);
+                }
+            }
+        } else {
+            throw new Error('Data should be either Object or Array');
         }
-    } else {
-        throw new Error('Data should be either Object or Array');
     }
 
     return result.join('');
 }, true);
 
-Beard.registerHelper('if', function (data, program, options) {
+Beard.registerHelper('if', function (args, program, options) {
 #ifdef DEBUG
-    console.log('Helper IF:', arguments);
+    console.log('Helper if BEGIN');
+    console.log('Arguments:', arguments);
 #endif
-    var env,
+    var data = args[0],
+        env,
         result = [],
         positive;
+
+    if (args.length > 1) {
+        throw new Error('Arguments count error');
+    }
 
     if (typeof data === 'object' &&
         data instanceof Array &&

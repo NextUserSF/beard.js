@@ -869,18 +869,88 @@
     afterEach(function() {
       return tpl = null;
     });
-    return describe('Block Helpers', function() {
+    describe('Block Helpers', function() {
       beforeEach(function() {
-        return Beard.registerHelper('foo', function(data, program, options) {
-          var env;
+        return Beard.registerHelper('block', function(args, program, options) {
+          var data, env;
+          data = args[0];
+          if (data != null) {
+            data = data.toUpperCase();
+          }
+          options.variables.data = data;
           env = new Beard.Compiler().compile(program, options);
           return env.result.join('', true);
         });
       });
-      return it('should return correct value', function() {
-        tpl.set('<% foo %>Helper<% endfoo %>');
+      it('should compile program', function() {
+        tpl.set('<% block %>Helper<% endblock %>');
         ret = tpl.render();
         return expect(ret).toEqual('Helper');
+      });
+      it('should process passed data', function() {
+        tpl.set('<% block v1 %><%= data %><% endblock %>');
+        tpl.addVariable('v1', 'data');
+        ret = tpl.render();
+        return expect(ret).toEqual('DATA');
+      });
+      it('should throw an error if syntax error', function() {
+        tpl.set('<% block %>Helper<% endfoo %>');
+        return expect(function() {
+          return tpl.render();
+        }).toThrow();
+      });
+      return it('should access «local» and «global» variables', function() {
+        tpl.set('<% block v1 %><%= v1 %> is <%= data %><% endblock %>');
+        tpl.addVariable('v1', 'data');
+        ret = tpl.render();
+        return expect(ret).toEqual('data is DATA');
+      });
+    });
+    return describe('Inline Helpers', function() {
+      beforeEach(function() {
+        Beard.registerHelper('inline', function(args, options) {
+          return 'Inline';
+        });
+        Beard.registerHelper('toUpper', function(args, options) {
+          return args.map(function(x) {
+            if (typeof x === 'string') {
+              return x.toUpperCase();
+            }
+          }).join(' ');
+        });
+        return Beard.registerHelper('asset', function(args, options) {
+          options.variables['new_var'] = 'New Variable';
+        });
+      });
+      it('should return correct value', function() {
+        tpl.set('<%~ inline %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('Inline');
+      });
+      it('should handle passed data', function() {
+        tpl.set('<%~ toUpper "upper case" %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('UPPER CASE');
+      });
+      it('should handle passed variable', function() {
+        tpl.set('<%~ toUpper v1 %>');
+        tpl.addVariable('v1', 'variable');
+        ret = tpl.render();
+        return expect(ret).toEqual('VARIABLE');
+      });
+      it('should handle multiple passed arguments', function() {
+        tpl.set('<%~ toUpper v1, "test", f1() %>');
+        tpl.addVariable('v1', 'variable');
+        tpl.addVariable('f1', function() {
+          return 'function';
+        });
+        ret = tpl.render();
+        return expect(ret).toEqual('VARIABLE TEST FUNCTION');
+      });
+      return it('should be able to change «global» scope variables', function() {
+        tpl.set('<%~ asset %><%= new_var %>');
+        ret = tpl.render();
+        return expect(ret).toEqual('New Variable');
       });
     });
   });

@@ -23,6 +23,7 @@ ID  [a-zA-Z_][a-zA-Z0-9_]*
 
 <beard>"<%="                                return 'OPEN_VARIABLE';
 <beard>"<%@"                                return 'OPEN_ELEMENT';
+<beard>"<%~"                                return 'OPEN_INLINE';
 <beard>"<%#"                                this.popState(); this.begin('com');
 <beard>"<%#"[\s\S]*?"%>"                    strip(3,5); this.popState(); return 'COMMENT';
 <beard>"<% end"{ID}" %>"                    strip(6,9); this.popState(); return 'END_BLOCK';
