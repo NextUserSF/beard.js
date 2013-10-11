@@ -17,7 +17,12 @@ Beard.prototype = {
             this.dat = data;
         }
 
-        return Beard.compile(this.tpl, {elements: this.elements, variables: this.dat});
+        var template = Beard.compile(this.tpl);
+
+        return template({
+            elements: this.elements,
+            variables: this.dat
+        });
     },
 
     // Returns an object containing an array of variables, and an array of elements:

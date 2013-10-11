@@ -10,5 +10,5 @@ describe 'Comment Tag', ->
   afterEach ->
     tpl = null
 
-  it 'should return nothing', ->
-    expect(ret).toEqual ''
+  it 'should return undefined', ->
+    expect(ret).not.toBeDefined()

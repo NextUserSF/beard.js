@@ -40,6 +40,9 @@
     // Beard.Compiler
     // --------------
 #include "compiler.js"
+    // Beard.JSCompiler
+    // ----------------
+#include "js-compiler.js"
     // Helpers
     // -------
 #include "helpers.js"
@@ -65,15 +68,16 @@
         }, { variables: [], elements: [] });
     };
 
-    Beard.compile = function (input, options) {
-        options = options || {};
-        var ast = Beard.parse(input),
-            env = new Compiler().compile(ast, options);
-        return env.result.join('');
-    };
-
     Beard.evaluateElement = function (input, options) {
         return Beard.compile(input, options);
+    };
+
+    Beard.template = function (tplSpec) {
+        return function (context, options) {
+            var result = tplSpec.call();
+
+            return result;
+        };
     };
 
     this.Beard = Beard;

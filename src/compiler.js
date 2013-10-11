@@ -2,23 +2,59 @@ var Compiler = Beard.Compiler = function () {};
 
 Compiler.prototype = {
     compiler: Compiler,
+    disassemble: function () {
+        var opcodes = this.opcodes,
+            i = 0,
+            j = 0,
+            l = opcodes.length,
+            opcode,
+            out = [],
+            params = [],
+            param;
+
+        for (; i < l; i += 1) {
+            opcode = opcodes[i];
+
+            if (opcode.opcode === 'DECLARE') {
+                out.push('DECLARE ' + opcode.name + '=' + opcode.value);
+            } else {
+                for (; j < opcode.args.length; j += 1) {
+                    param = opcode.args[j];
+                    if (typeof param === 'string') {
+                        param = '"' + param.replace('\n', '\\n') + '"';
+                    }
+                    params.push(param);
+                }
+                out.push(opcode.opcode + ' ' + params.join(' '));
+            }
+        }
+
+        return out.join('\n');
+    },
+
     compile: function (program, options) {
+        this.options = options;
+        return this.program(program);
+    },
+
+    // Compile program
+    program: function (program) {
         var statements = program.statements,
             i = 0,
             l = statements.length,
             statement;
 
-        options.elements = options.elements || {};
-        options.variables = options.variables || {};
-        this.options = options;
-
-        this.result = [];
+        this.opcodes = [];
 
         for (i; i < l; i += 1) {
             statement = statements[i];
-            console.log(statement);
-            this.result.push(this[statement.type](statement));
+#ifdef DEBUG
+            console.debug(statement);
+#endif
+            this[statement.type](statement);
         }
+
+        this.isSimple = l === 1;
 
         return this;
     },
@@ -33,8 +69,8 @@ Compiler.prototype = {
     },
 
     // Compile content node
-    content: function (string) {
-        return string.string;
+    content: function (content) {
+        this.opcode('appendContent', content.string);
     },
 
     // Compile data variable tag
@@ -45,7 +81,7 @@ Compiler.prototype = {
             key;
 
 #ifdef DEBUG
-        console.log('Compiler.data(): data:', data);
+        console.debug('Compiler.data(): data:', data);
 #endif
         for (; i < l; i += 1) {
             key = data.variable[i];
@@ -67,7 +103,7 @@ Compiler.prototype = {
         }
 
 #ifdef DEBUG
-        console.log('Compiler.data(): return value:', v);
+        console.debug('Compiler.data(): return value:', v);
 #endif
         return v;
     },
@@ -128,9 +164,7 @@ Compiler.prototype = {
     },
 
     // Compile comment
-    comment: function () {
-        return '';
-    },
+    comment: function () {},
 
     // Compile block instructions code
     block: function (block) {
@@ -194,5 +228,34 @@ Compiler.prototype = {
         strict = !!strict;
 
         return strict ? bool.stringModeValue : bool.bool;
+    },
+
+    opcode: function (name) {
+        this.opcodes.push({opcode: name, args: [].slice.call(arguments, 1)});
     }
+};
+
+Beard.compile = function (input, options) {
+    if (input == null || (typeof input !== 'string' && input.constructor !== Beard.AST.ProgramNode)) {
+        throw new Error('You must pass a string or Beard AST to Beard.compile. You passed ' + input);
+    }
+    options = options || {};
+
+    var compiled;
+
+    function compile () {
+        var ast = Beard.parse(input),
+            env = new Compiler().compile(ast, options),
+            tplSpec = new Beard.JSCompiler().compile(env, options);
+
+        return Beard.template(tplSpec);
+    };
+
+    return function (context, options) {
+        if (!compiled) {
+            compiled = compile();
+        }
+
+        return compiled.call(this, context, options);
+    };
 };
