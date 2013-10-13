@@ -74,7 +74,7 @@
 var parser = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"root":3,"statements":4,"EOF":5,"statement":6,"openBlock":7,"program":8,"closeBlock":9,"inlineTag":10,"elementTag":11,"variableTag":12,"CONTENT":13,"COMMENT":14,"OPEN":15,"ID":16,"args":17,"CLOSE":18,"hash":19,"OPEN_INLINE":20,"segments":21,"SEP":22,"hashSegment":23,"data":24,"compOperator":25,"EQUALS":26,"GREATER":27,"LESSER":28,"AND":29,"OR":30,"param":31,"STRING":32,"INTEGER":33,"BOOLEAN":34,"simpleInverse":35,"OPEN_INVERSE":36,"END_BLOCK":37,"OPEN_ELEMENT":38,"OPEN_VARIABLE":39,"var":40,"func":41,"ALT":42,"funcArgs":43,"OP":44,"CP":45,"COMMA":46,"$accept":0,"$end":1},
+symbols_: {"error":2,"root":3,"statements":4,"EOF":5,"statement":6,"openBlock":7,"program":8,"closeBlock":9,"inlineTag":10,"elementTag":11,"dataTag":12,"CONTENT":13,"COMMENT":14,"OPEN":15,"ID":16,"args":17,"CLOSE":18,"hash":19,"OPEN_INLINE":20,"segments":21,"SEP":22,"hashSegment":23,"data":24,"compOperator":25,"EQUALS":26,"GREATER":27,"LESSER":28,"AND":29,"OR":30,"param":31,"STRING":32,"INTEGER":33,"BOOLEAN":34,"simpleInverse":35,"OPEN_INVERSE":36,"END_BLOCK":37,"OPEN_ELEMENT":38,"OPEN_VARIABLE":39,"var":40,"func":41,"ALT":42,"funcArgs":43,"OP":44,"CP":45,"COMMA":46,"$accept":0,"$end":1},
 terminals_: {2:"error",5:"EOF",13:"CONTENT",14:"COMMENT",15:"OPEN",16:"ID",18:"CLOSE",20:"OPEN_INLINE",22:"SEP",26:"EQUALS",27:"GREATER",28:"LESSER",29:"AND",30:"OR",32:"STRING",33:"INTEGER",34:"BOOLEAN",36:"OPEN_INVERSE",37:"END_BLOCK",38:"OPEN_ELEMENT",39:"OPEN_VARIABLE",42:"ALT",44:"OP",45:"CP",46:"COMMA"},
 productions_: [0,[3,2],[4,1],[4,2],[6,3],[6,1],[6,1],[6,1],[6,1],[6,1],[7,4],[7,4],[10,4],[10,4],[21,3],[21,1],[19,1],[23,3],[25,1],[25,1],[25,1],[25,1],[25,1],[31,1],[31,1],[31,1],[8,2],[8,3],[8,2],[8,1],[8,1],[8,0],[35,2],[9,1],[11,3],[12,3],[24,1],[24,1],[24,1],[40,1],[40,3],[40,3],[40,5],[41,2],[41,4],[41,4],[41,6],[43,3],[17,3],[17,1],[17,0]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
@@ -94,7 +94,7 @@ case 5:this.$ = new yy.InlineNode($$[$0]);
 break;
 case 6:this.$ = new yy.ElementNode($$[$0]);
 break;
-case 7:this.$ = $$[$0];
+case 7:this.$ = new yy.DataNode($$[$0]);
 break;
 case 8:this.$ = new yy.ContentNode($$[$0]);
 break;
@@ -146,13 +146,13 @@ case 37:this.$ = $$[$0];
 break;
 case 38:this.$ = $$[$0];
 break;
-case 39:this.$ = new yy.DataNode($$[$0]);
+case 39:this.$ = new yy.VariableNode($$[$0]);
 break;
-case 40:this.$ = new yy.DataNode($$[$0-2], $$[$0]);
+case 40:this.$ = new yy.VariableNode($$[$0-2], $$[$0]);
 break;
-case 41:this.$ = new yy.DataNode([$$[$0-2]].concat($$[$0]));
+case 41:this.$ = new yy.VariableNode([$$[$0-2]].concat($$[$0]));
 break;
-case 42:this.$ = new yy.DataNode([$$[$0-4]].concat($$[$0-2]), $$[$0]);
+case 42:this.$ = new yy.VariableNode([$$[$0-4]].concat($$[$0-2]), $$[$0]);
 break;
 case 43:this.$ = new yy.FuncNode($$[$0-1], $$[$0]);
 break;

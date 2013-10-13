@@ -1,3 +1,5 @@
+// Beard.AST
+// ---------
 Beard.AST = {};
 
 Beard.AST.ProgramNode = function (statements, inverse) {
@@ -18,10 +20,17 @@ Beard.AST.ContentNode = function (string) {
     this.string = string;
 };
 
-Beard.AST.DataNode = function (variable, def) {
+Beard.AST.DataNode = function (data) {
     this.type = 'data';
-    this.variable = variable;
+    this.data = data;
+};
+
+Beard.AST.VariableNode = function (variable, def) {
+    this.type = 'variable';
+    this.parts = variable;
+    this.string = variable.join('.');
     this.def = def || '';
+    this.isSimple = variable.length === 1;
 };
 
 Beard.AST.CommentNode = function (comment) {

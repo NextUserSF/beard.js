@@ -1,3 +1,5 @@
+// Helpers
+// -------
 #define COMPOPERATOR /^(={1,3}|<|>|&&|\|\|)$/
 
 Beard.BlockHelpers = Beard.Helpers = {};

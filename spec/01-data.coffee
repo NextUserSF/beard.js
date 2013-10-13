@@ -8,20 +8,68 @@ describe 'Data Tag', ->
   afterEach ->
     tpl = null
 
-  describe 'Plain Variable', ->
+  describe 'String', ->
     it 'should return correct value', ->
-      tpl.set '<%= variable %>'
+      tpl.set '<%= "Test" %>'
+      ret = tpl.render()
+
+      expect(ret).toBe 'Test'
+
+  describe 'String + Content', ->
+    it 'should return correct value', ->
+      tpl.set 'Hello, <%= "World" %>!'
+      ret = tpl.render()
+
+      expect(ret).toBe 'Hello, World!'
+
+  describe 'Integer', ->
+    it 'should return correct value', ->
+      tpl.set '<%= 1024 %>'
+      ret = tpl.render()
+
+      expect(ret).toBe 1024
+
+  describe 'Integer + Content', ->
+    it 'should return correct value', ->
+      tpl.set '2^10=<%= 1024 %>'
+      ret = tpl.render()
+
+      expect(ret).toBe '2^10=1024'
+
+  describe 'Boolean', ->
+    it 'should return correct value', ->
+      tpl.set '<%= true %>'
+      ret = tpl.render()
+
+      expect(ret).toBe true
+
+  describe 'Boolean + Content', ->
+    it 'should return correct value', ->
+      tpl.set 'True is <%= true %>'
+      ret = tpl.render()
+
+      expect(ret).toBe 'True is true'
+
+  describe 'Plain Variable', ->
+    beforeEach ->
+      tpl.set '<%= variable | "Default" %>'
+
+    it 'should return correct value', ->
       tpl.addVariable 'variable', 'Variable'
       ret = tpl.render()
 
       expect(ret).toEqual 'Variable'
 
     it 'should return default value', ->
-      tpl.set '<%= variable | "Default" %>'
       ret = tpl.render()
 
       expect(ret).toEqual 'Default'
 
+    it 'should handle 0 correctly', ->
+      tpl.addVariable 'variable', 0
+      ret = tpl.render()
+
+      expect(ret).toBe 0
 
   describe 'Nested Variable', ->
     it 'should return correct value', ->

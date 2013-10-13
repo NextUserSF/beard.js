@@ -1,3 +1,5 @@
+// Beard.Compiler
+// --------------
 var Compiler = Beard.Compiler = function () {};
 
 Compiler.prototype = {
@@ -33,7 +35,10 @@ Compiler.prototype = {
     },
 
     compile: function (program, options) {
+        this.children = [];
+        this.depths = {list: []};
         this.options = options;
+
         return this.program(program);
     },
 
@@ -56,6 +61,10 @@ Compiler.prototype = {
 
         this.isSimple = l === 1;
 
+        this.depths.list = this.depths.list.sort(function (a, b) {
+            return a - b;
+        });
+
         return this;
     },
 
@@ -73,39 +82,32 @@ Compiler.prototype = {
         this.opcode('appendContent', content.string);
     },
 
-    // Compile data variable tag
+    // Compile data tag
     data: function (data) {
-        var i = 0,
-            l = data.variable.length,
-            v = this.options.variables,
-            key;
+        this[data.data.type](data.data);
+        this.opcode('append');
+    },
 
-#ifdef DEBUG
-        console.debug('Compiler.data(): data:', data);
-#endif
-        for (; i < l; i += 1) {
-            key = data.variable[i];
-            // Handle Funciton-Variable mixture
-            if (typeof key !== 'string' && key.constructor === Beard.AST.FuncNode) {
-                v = this[key.type](key);
-            } else {
-                v = v[key];
-            }
+    // Compile variable node
+    variable: function (variable) {
+        var name = variable.parts[0],
+            i = 1,
+            l = variable.parts.length;
 
-            if (typeof v === 'undefined') {
-                if (data.def) {
-                    v = this[data.def.type](data.def);
-                } else {
-                    v = '';
-                }
-                break;
-            }
+        if (!name) {
+            this.opcode('pushContext');
+        } else {
+            this.opcode('lookupOnContext', variable.parts[0]);
         }
 
-#ifdef DEBUG
-        console.debug('Compiler.data(): return value:', v);
-#endif
-        return v;
+        for (; i < l; i += 1) {
+            this.opcode('lookup', variable.parts[i]);
+        }
+
+        if (variable.def) {
+            this[variable.def.type](variable.def);
+            this.opcode('fallback');
+        }
     },
 
     // Compile function call
@@ -207,27 +209,17 @@ Compiler.prototype = {
 
     // Compile string parameter
     STRING: function (string) {
-        return string.string;
+        this.opcode('pushString', string.string);
     },
 
     // Compile integer parameter
-    //
-    // If `strict` is `True`, it returns the `Number` value,
-    // otherwise, its `String` representation. The default is `False`.
-    INTEGER: function (integer, strict) {
-        strict = !!strict;
-
-        return strict ? integer.stringModeValue : integer.integer;
+    INTEGER: function (integer) {
+        this.opcode('pushLiteral', integer.integer);
     },
 
     // Compile boolean parameter
-    //
-    // If `strict` is `True`, it returns the `Boolean` value,
-    // otherwise, its `String` representation. The default is `False`.
-    BOOLEAN: function (bool, strict) {
-        strict = !!strict;
-
-        return strict ? bool.stringModeValue : bool.bool;
+    BOOLEAN: function (bool) {
+        this.opcode('pushLiteral', bool.bool);
     },
 
     opcode: function (name) {

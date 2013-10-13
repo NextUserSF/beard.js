@@ -21,7 +21,7 @@
     //
     Beard = function (tpl, data, elements) {
         this.tpl = tpl || '';
-        this.dat = data || {};
+        this.data = data || {};
         this.UDEF = undefined;
         this.elements = elements || {};
 
@@ -33,19 +33,12 @@
     // ------------
 #include "parser.js"
     Beard.Parser = parser;
-
-    // Beard.AST
-    // ---------
 #include "ast.js"
-    // Beard.Compiler
-    // --------------
 #include "compiler.js"
-    // Beard.JSCompiler
-    // ----------------
 #include "js-compiler.js"
-    // Helpers
-    // -------
+#include "runtime.js"
 #include "helpers.js"
+#include "utils.js"
 
     Beard.parse = function (input) {
         Beard.Parser.yy = Beard.AST;
@@ -66,18 +59,6 @@
 
             return previous;
         }, { variables: [], elements: [] });
-    };
-
-    Beard.evaluateElement = function (input, options) {
-        return Beard.compile(input, options);
-    };
-
-    Beard.template = function (tplSpec) {
-        return function (context, options) {
-            var result = tplSpec.call();
-
-            return result;
-        };
     };
 
     this.Beard = Beard;

@@ -27,17 +27,65 @@
     afterEach(function() {
       return tpl = null;
     });
+    describe('String', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= "Test" %>');
+        ret = tpl.render();
+        return expect(ret).toBe('Test');
+      });
+    });
+    describe('String + Content', function() {
+      return it('should return correct value', function() {
+        tpl.set('Hello, <%= "World" %>!');
+        ret = tpl.render();
+        return expect(ret).toBe('Hello, World!');
+      });
+    });
+    describe('Integer', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= 1024 %>');
+        ret = tpl.render();
+        return expect(ret).toBe(1024);
+      });
+    });
+    describe('Integer + Content', function() {
+      return it('should return correct value', function() {
+        tpl.set('2^10=<%= 1024 %>');
+        ret = tpl.render();
+        return expect(ret).toBe('2^10=1024');
+      });
+    });
+    describe('Boolean', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= true %>');
+        ret = tpl.render();
+        return expect(ret).toBe(true);
+      });
+    });
+    describe('Boolean + Content', function() {
+      return it('should return correct value', function() {
+        tpl.set('True is <%= true %>');
+        ret = tpl.render();
+        return expect(ret).toBe('True is true');
+      });
+    });
     describe('Plain Variable', function() {
+      beforeEach(function() {
+        return tpl.set('<%= variable | "Default" %>');
+      });
       it('should return correct value', function() {
-        tpl.set('<%= variable %>');
         tpl.addVariable('variable', 'Variable');
         ret = tpl.render();
         return expect(ret).toEqual('Variable');
       });
-      return it('should return default value', function() {
-        tpl.set('<%= variable | "Default" %>');
+      it('should return default value', function() {
         ret = tpl.render();
         return expect(ret).toEqual('Default');
+      });
+      return it('should handle 0 correctly', function() {
+        tpl.addVariable('variable', 0);
+        ret = tpl.render();
+        return expect(ret).toBe(0);
       });
     });
     describe('Nested Variable', function() {

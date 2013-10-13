@@ -14,15 +14,12 @@ Beard.prototype = {
     // Render the template
     render: function (data) {
         if (data) {
-            this.dat = data;
+            this.data = data;
         }
 
         var template = Beard.compile(this.tpl);
 
-        return template({
-            elements: this.elements,
-            variables: this.dat
-        });
+        return template(this.data);
     },
 
     // Returns an object containing an array of variables, and an array of elements:
@@ -67,14 +64,14 @@ Beard.prototype = {
 
     // Add some data in the data object (may be a variable, a function)
     addVariable: function (key, value) {
-        this.dat[key] = value;
+        this.data[key] = value;
 
         return this;
     },
 
     // Remove some data in the data object
     remVariable: function (key) {
-        delete this.dat[key];
+        delete this.data[key];
 
         return this;
     },
@@ -82,7 +79,7 @@ Beard.prototype = {
     // Remove everything in the data object
     // FIXME: Change name?
     resetDataObject: function () {
-        this.dat = {};
+        this.data = {};
 
         return this;
     }

@@ -72,7 +72,7 @@ Copyright (c) 2013 NextUser</code></pre>
             
             <div class="content"><div class='highlight'><pre>    Beard = <span class="keyword">function</span>(tpl, data, elements) {
         <span class="keyword">this</span>.tpl = tpl || <span class="string">''</span>;
-        <span class="keyword">this</span>.dat = data || {};
+        <span class="keyword">this</span>.data = data || {};
         <span class="keyword">this</span>.UDEF = <span class="literal">undefined</span>;
         <span class="keyword">this</span>.elements = elements || {};
     };
@@ -128,13 +128,10 @@ Copyright (c) 2013 NextUser</code></pre>
             
             <div class="content"><div class='highlight'><pre>        render: <span class="keyword">function</span>(data) {
             <span class="keyword">if</span> (data) {
-                <span class="keyword">this</span>.dat = data;
+                <span class="keyword">this</span>.data = data;
             }
             <span class="keyword">var</span> template = Beard.compile(<span class="keyword">this</span>.tpl);
-            <span class="keyword">return</span> template({
-                elements: <span class="keyword">this</span>.elements,
-                variables: <span class="keyword">this</span>.dat
-            });
+            <span class="keyword">return</span> template(<span class="keyword">this</span>.data);
         },</pre></div></div>
             
         </li>
@@ -246,7 +243,7 @@ Copyright (c) 2013 NextUser</code></pre>
             </div>
             
             <div class="content"><div class='highlight'><pre>        addVariable: <span class="keyword">function</span>(key, value) {
-            <span class="keyword">this</span>.dat[key] = value;
+            <span class="keyword">this</span>.data[key] = value;
             <span class="keyword">return</span> <span class="keyword">this</span>;
         },</pre></div></div>
             
@@ -264,7 +261,7 @@ Copyright (c) 2013 NextUser</code></pre>
             </div>
             
             <div class="content"><div class='highlight'><pre>        remVariable: <span class="keyword">function</span>(key) {
-            <span class="keyword">delete</span> <span class="keyword">this</span>.dat[key];
+            <span class="keyword">delete</span> <span class="keyword">this</span>.data[key];
             <span class="keyword">return</span> <span class="keyword">this</span>;
         },</pre></div></div>
             
@@ -283,7 +280,7 @@ FIXME: Change name?</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        resetDataObject: <span class="keyword">function</span>() {
-            <span class="keyword">this</span>.dat = {};
+            <span class="keyword">this</span>.data = {};
             <span class="keyword">return</span> <span class="keyword">this</span>;
         }
     };</pre></div></div>
@@ -401,7 +398,7 @@ FIXME: Change name?</p>
                 <span class="string">"closeBlock"</span>: <span class="number">9</span>,
                 <span class="string">"inlineTag"</span>: <span class="number">10</span>,
                 <span class="string">"elementTag"</span>: <span class="number">11</span>,
-                <span class="string">"variableTag"</span>: <span class="number">12</span>,
+                <span class="string">"dataTag"</span>: <span class="number">12</span>,
                 <span class="string">"CONTENT"</span>: <span class="number">13</span>,
                 <span class="string">"COMMENT"</span>: <span class="number">14</span>,
                 <span class="string">"OPEN"</span>: <span class="number">15</span>,
@@ -541,7 +538,7 @@ FIXME: Change name?</p>
                         <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.ElementNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">7</span>:
-                        <span class="keyword">this</span>.$ = $$[$<span class="number">0</span>];
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">8</span>:
                         <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.ContentNode($$[$<span class="number">0</span>]);
@@ -624,16 +621,16 @@ FIXME: Change name?</p>
                         <span class="keyword">this</span>.$ = $$[$<span class="number">0</span>];
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">39</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode($$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.VariableNode($$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">40</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode($$[$<span class="number">0</span> - <span class="number">2</span>], $$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.VariableNode($$[$<span class="number">0</span> - <span class="number">2</span>], $$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">41</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode([$$[$<span class="number">0</span> - <span class="number">2</span>]].concat($$[$<span class="number">0</span>]));
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.VariableNode([$$[$<span class="number">0</span> - <span class="number">2</span>]].concat($$[$<span class="number">0</span>]));
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">42</span>:
-                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.DataNode([$$[$<span class="number">0</span> - <span class="number">4</span>]].concat($$[$<span class="number">0</span> - <span class="number">2</span>]), $$[$<span class="number">0</span>]);
+                        <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.VariableNode([$$[$<span class="number">0</span> - <span class="number">4</span>]].concat($$[$<span class="number">0</span> - <span class="number">2</span>]), $$[$<span class="number">0</span>]);
                         <span class="keyword">break</span>;
                     <span class="keyword">case</span> <span class="number">43</span>:
                         <span class="keyword">this</span>.$ = <span class="keyword">new</span> yy.FuncNode($$[$<span class="number">0</span> - <span class="number">1</span>], $$[$<span class="number">0</span>]);
@@ -2212,10 +2209,16 @@ FIXME: Change name?</p>
         <span class="keyword">this</span>.type = <span class="string">'content'</span>;
         <span class="keyword">this</span>.string = string;
     };
-    Beard.AST.DataNode = <span class="keyword">function</span>(variable, def) {
+    Beard.AST.DataNode = <span class="keyword">function</span>(data) {
         <span class="keyword">this</span>.type = <span class="string">'data'</span>;
-        <span class="keyword">this</span>.variable = variable;
+        <span class="keyword">this</span>.data = data;
+    };
+    Beard.AST.VariableNode = <span class="keyword">function</span>(variable, def) {
+        <span class="keyword">this</span>.type = <span class="string">'variable'</span>;
+        <span class="keyword">this</span>.parts = variable;
+        <span class="keyword">this</span>.string = variable.join(<span class="string">'.'</span>);
         <span class="keyword">this</span>.def = def || <span class="string">''</span>;
+        <span class="keyword">this</span>.isSimple = variable.length === <span class="number">1</span>;
     };
     Beard.AST.CommentNode = <span class="keyword">function</span>(comment) {
         <span class="keyword">this</span>.type = <span class="string">'comment'</span>;
@@ -2319,6 +2322,10 @@ FIXME: Change name?</p>
             <span class="keyword">return</span> out.join(<span class="string">'\n'</span>);
         },
         compile: <span class="keyword">function</span>(program, options) {
+            <span class="keyword">this</span>.children = [];
+            <span class="keyword">this</span>.depths = {
+                list: []
+            };
             <span class="keyword">this</span>.options = options;
             <span class="keyword">return</span> <span class="keyword">this</span>.program(program);
         },</pre></div></div>
@@ -2347,6 +2354,9 @@ FIXME: Change name?</p>
                 <span class="keyword">this</span>[statement.type](statement);
             }
             <span class="keyword">this</span>.isSimple = l === <span class="number">1</span>;
+            <span class="keyword">this</span>.depths.list = <span class="keyword">this</span>.depths.list.sort(<span class="keyword">function</span>(a, b) {
+                <span class="keyword">return</span> a - b;
+            });
             <span class="keyword">return</span> <span class="keyword">this</span>;
         },</pre></div></div>
             
@@ -2396,17 +2406,14 @@ FIXME: Change name?</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
-              <p>Compile data variable tag</p>
+              <p>Compile data tag</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>        data: <span class="keyword">function</span>(data) {
-            <span class="keyword">var</span> i = <span class="number">0</span>,
-                l = data.variable.length,
-                v = <span class="keyword">this</span>.options.variables,
-                key;
-            <span class="keyword">for</span> (; i &lt; l; i += <span class="number">1</span>) {
-                key = data.variable[i];</pre></div></div>
+            <span class="keyword">this</span>[data.data.type](data.data);
+            <span class="keyword">this</span>.opcode(<span class="string">'append'</span>);
+        },</pre></div></div>
             
         </li>
         
@@ -2417,25 +2424,26 @@ FIXME: Change name?</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
-              <p>Handle Funciton-Variable mixture</p>
+              <p>Compile variable node</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="keyword">typeof</span> key !== <span class="string">'string'</span> &amp;&amp; key.constructor === Beard.AST.FuncNode) {
-                    v = <span class="keyword">this</span>[key.type](key);
-                } <span class="keyword">else</span> {
-                    v = v[key];
-                }
-                <span class="keyword">if</span> (<span class="keyword">typeof</span> v === <span class="string">'undefined'</span>) {
-                    <span class="keyword">if</span> (data.def) {
-                        v = <span class="keyword">this</span>[data.def.type](data.def);
-                    } <span class="keyword">else</span> {
-                        v = <span class="string">''</span>;
-                    }
-                    <span class="keyword">break</span>;
-                }
+            <div class="content"><div class='highlight'><pre>        variable: <span class="keyword">function</span>(variable) {
+            <span class="keyword">var</span> name = variable.parts[<span class="number">0</span>],
+                i = <span class="number">1</span>,
+                l = variable.parts.length;
+            <span class="keyword">if</span> (!name) {
+                <span class="keyword">this</span>.opcode(<span class="string">'pushContext'</span>);
+            } <span class="keyword">else</span> {
+                <span class="keyword">this</span>.opcode(<span class="string">'lookupOnContext'</span>, variable.parts[<span class="number">0</span>]);
             }
-            <span class="keyword">return</span> v;
+            <span class="keyword">for</span> (; i &lt; l; i += <span class="number">1</span>) {
+                <span class="keyword">this</span>.opcode(<span class="string">'lookup'</span>, variable.parts[i]);
+            }
+            <span class="keyword">if</span> (variable.def) {
+                <span class="keyword">this</span>[variable.def.type](variable.def);
+                <span class="keyword">this</span>.opcode(<span class="string">'fallback'</span>);
+            }
         },</pre></div></div>
             
         </li>
@@ -2666,7 +2674,7 @@ FIXME: Change name?</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        STRING: <span class="keyword">function</span>(string) {
-            <span class="keyword">return</span> string.string;
+            <span class="keyword">this</span>.opcode(<span class="string">'pushString'</span>, string.string);
         },</pre></div></div>
             
         </li>
@@ -2679,14 +2687,11 @@ FIXME: Change name?</p>
                 <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <p>Compile integer parameter</p>
-<p>If <code>strict</code> is <code>True</code>, it returns the <code>Number</code> value,
-otherwise, its <code>String</code> representation. The default is <code>False</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        INTEGER: <span class="keyword">function</span>(integer, strict) {
-            strict = !! strict;
-            <span class="keyword">return</span> strict ? integer.stringModeValue : integer.integer;
+            <div class="content"><div class='highlight'><pre>        INTEGER: <span class="keyword">function</span>(integer) {
+            <span class="keyword">this</span>.opcode(<span class="string">'pushLiteral'</span>, integer.integer);
         },</pre></div></div>
             
         </li>
@@ -2699,14 +2704,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
                 <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>Compile boolean parameter</p>
-<p>If <code>strict</code> is <code>True</code>, it returns the <code>Boolean</code> value,
-otherwise, its <code>String</code> representation. The default is <code>False</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        BOOLEAN: <span class="keyword">function</span>(bool, strict) {
-            strict = !! strict;
-            <span class="keyword">return</span> strict ? bool.stringModeValue : bool.bool;
+            <div class="content"><div class='highlight'><pre>        BOOLEAN: <span class="keyword">function</span>(bool) {
+            <span class="keyword">this</span>.opcode(<span class="string">'pushLiteral'</span>, bool.bool);
         },
         opcode: <span class="keyword">function</span>(name) {
             <span class="keyword">this</span>.opcodes.push({
@@ -2734,6 +2736,9 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
             }
             <span class="keyword">return</span> compiled.call(<span class="keyword">this</span>, context, options);
         };
+    };
+    <span class="keyword">var</span> Literal = <span class="keyword">function</span>(value) {
+        <span class="keyword">this</span>.value = value;
     };</pre></div></div>
             
         </li>
@@ -2763,11 +2768,40 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
             
             <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> JSCompiler = Beard.JSCompiler = <span class="keyword">function</span>() {};
     JSCompiler.prototype = {
+        namespace: <span class="string">'Beard'</span>,
+        nameLookup: <span class="keyword">function</span>(parent, name) {
+            <span class="keyword">if</span> (<span class="regexp">/^[0-9]+$/</span>.test(name)) {
+                <span class="keyword">return</span> parent + <span class="string">'['</span> + name + <span class="string">']'</span>;
+            }
+            <span class="keyword">if</span> (JSCompiler.isValidVarName(name)) {
+                <span class="keyword">return</span> parent + <span class="string">'.'</span> + name;
+            }
+            <span class="keyword">return</span> parent + <span class="string">'['</span> + name + <span class="string">']'</span>;
+        },
+        appendToBuffer: <span class="keyword">function</span>(str) {
+            <span class="keyword">if</span> (<span class="keyword">this</span>.env.isSimple) {
+                <span class="keyword">return</span> <span class="string">'return '</span> + str + <span class="string">';'</span>;
+            }
+            <span class="keyword">return</span> {
+                appendToBuffer: <span class="literal">true</span>,
+                content: str,
+                toString: <span class="keyword">function</span>() {
+                    <span class="keyword">return</span> <span class="string">"buffer += "</span> + str + <span class="string">";"</span>;
+                }
+            };
+        },
+        initializeBuffer: <span class="keyword">function</span>() {
+            <span class="keyword">return</span> <span class="keyword">this</span>.quotedString(<span class="string">''</span>);
+        },
         compile: <span class="keyword">function</span>(env, options) {
             <span class="keyword">this</span>.env = env;
             <span class="keyword">this</span>.options = options || {};
-            <span class="keyword">this</span>.source = [];
+            <span class="keyword">this</span>.preamble();
+            <span class="keyword">this</span>.stackSlot = <span class="number">0</span>;
+            <span class="keyword">this</span>.stackVars = [];
             <span class="keyword">this</span>.i = <span class="number">0</span>;
+            <span class="keyword">this</span>.compileStack = [];
+            <span class="keyword">this</span>.inlineStack = [];
             <span class="keyword">var</span> opcodes = env.opcodes,
                 opcode,
                 l = opcodes.length;
@@ -2781,9 +2815,33 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
             }
             <span class="keyword">return</span> <span class="keyword">this</span>.createFunctionContext();
         },
+        preamble: <span class="keyword">function</span>() {
+            <span class="keyword">var</span> out = [];
+            <span class="keyword">if</span> (!<span class="keyword">this</span>.isChild) {
+                <span class="keyword">var</span> namespace = <span class="keyword">this</span>.namespace;
+                <span class="keyword">var</span> copies = <span class="string">'helpers = this.merge(helpers, '</span> + namespace + <span class="string">'.helpers);'</span>;
+                out.push(copies);
+            }
+            <span class="keyword">if</span> (!<span class="keyword">this</span>.env.isSimple) {
+                out.push(<span class="string">', buffer = '</span> + <span class="keyword">this</span>.initializeBuffer());
+            } <span class="keyword">else</span> {
+                out.push(<span class="string">''</span>);
+            }
+            <span class="keyword">this</span>.lastContext = <span class="number">0</span>;
+            <span class="keyword">this</span>.source = out;
+        },
         createFunctionContext: <span class="keyword">function</span>() {
-            <span class="keyword">var</span> params = [],
-                source = <span class="keyword">this</span>.mergeSource();
+            <span class="keyword">if</span> (<span class="keyword">this</span>.source[<span class="number">1</span>]) {
+                <span class="keyword">this</span>.source[<span class="number">1</span>] = <span class="string">'var '</span> + <span class="keyword">this</span>.source[<span class="number">1</span>].substring(<span class="number">2</span>) + <span class="string">';'</span>;
+            }
+            <span class="keyword">if</span> (!<span class="keyword">this</span>.env.isSimple) {
+                <span class="keyword">this</span>.source.push(<span class="string">'return buffer;'</span>);
+            }
+            <span class="keyword">var</span> params = [<span class="string">'Beard'</span>, <span class="string">'depth0'</span>, <span class="string">'helpers'</span>, <span class="string">'elements'</span>, <span class="string">'data'</span>];
+            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, l = <span class="keyword">this</span>.env.depths.list.length; i &lt; l; i++) {
+                params.push(<span class="string">'depth'</span> + <span class="keyword">this</span>.environment.depths.list[i]);
+            }
+            <span class="keyword">var</span> source = <span class="keyword">this</span>.mergeSource();
             params.push(source);
             <span class="keyword">return</span> Function.apply(<span class="keyword">this</span>, params);
         },</pre></div></div>
@@ -2801,8 +2859,260 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        appendContent: function(content) {
-            this.source.push(this.appendToBuffer(this.quotedString(content)));
+            <div class="content"><div class='highlight'><pre>        appendContent: <span class="keyword">function</span>(content) {
+            <span class="keyword">this</span>.source.push(<span class="keyword">this</span>.appendToBuffer(<span class="keyword">this</span>.quotedString(content)));
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <p>Push a quoted version of <code>string</code> onto the stack</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        pushString: <span class="keyword">function</span>(str) {
+            <span class="keyword">this</span>.pushStackLiteral(<span class="keyword">this</span>.quotedString(str));
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <p>Push an expression onto the stack</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        push: <span class="keyword">function</span>(expr) {
+            <span class="keyword">this</span>.inlineStack.push(expr);
+            <span class="keyword">return</span> expr;
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-67">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-67">&#182;</a>
+              </div>
+              <p>Push a value onto the stack</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        pushLiteral: <span class="keyword">function</span>(value) {
+            <span class="keyword">this</span>.pushStackLiteral(value);
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <p>Invoke variable</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        invokeVariable: <span class="keyword">function</span>(name) {
+            <span class="keyword">var</span> lookup = <span class="keyword">this</span>.nameLookup(<span class="string">'depth'</span> + <span class="keyword">this</span>.lastContext + <span class="string">'.variables'</span>, name, <span class="string">'context'</span>),
+                local = <span class="keyword">this</span>.popStack(), <span class="comment">// default value</span>
+                nextStack = <span class="keyword">this</span>.nextStack();
+            <span class="keyword">this</span>.source.push(nextStack + <span class="string">' = '</span> + lookup + <span class="string">';'</span> + nextStack + <span class="string">' = typeof '</span> + nextStack + <span class="string">' === "function" ? '</span> + nextStack + <span class="string">'.apply(depth0) : '</span> + nextStack + <span class="string">';'</span>);
+            <span class="keyword">if</span> (local) {
+                <span class="keyword">this</span>.source.push(nextStack + <span class="string">' = '</span> + nextStack + <span class="string">' || '</span> + local + <span class="string">';'</span>);
+            }
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-69">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-69">&#182;</a>
+              </div>
+              <p>Coerces <code>value</code> to a String and appends it to the current buffer.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        append: <span class="keyword">function</span>() {
+            <span class="keyword">this</span>.flushInline();
+            <span class="keyword">var</span> local = <span class="keyword">this</span>.popStack();
+            <span class="keyword">this</span>.source.push(<span class="string">'if('</span> + local + <span class="string">' || '</span> + local + <span class="string">' === 0) { '</span> + <span class="keyword">this</span>.appendToBuffer(local) + <span class="string">' }'</span>);
+            <span class="keyword">if</span> (<span class="keyword">this</span>.env.isSimple) {
+                <span class="keyword">this</span>.source.push(<span class="string">'else { '</span> + <span class="keyword">this</span>.appendToBuffer(<span class="string">"''"</span>) + <span class="string">' }'</span>);
+            }
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-70">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-70">&#182;</a>
+              </div>
+              <p>Looks up the value of <code>name</code> on the current context and pushes it onto the
+stack.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        lookupOnContext: <span class="keyword">function</span>(name) {
+            <span class="keyword">this</span>.push(<span class="keyword">this</span>.nameLookup(<span class="string">'depth'</span> + <span class="keyword">this</span>.lastContext, name, <span class="string">'context'</span>));
+        },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-71">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-71">&#182;</a>
+              </div>
+              <p>Replace the value on the stack with the result of looking up <code>name</code> on <code>value</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        lookup: <span class="keyword">function</span>(name) {
+            <span class="keyword">this</span>.replaceStack(<span class="keyword">function</span>(current) {
+                <span class="keyword">return</span> current + <span class="string">' == null || '</span> + current + <span class="string">' === false ? '</span> + current + <span class="string">' : '</span> + <span class="keyword">this</span>.nameLookup(current, name, <span class="string">'context'</span>);
+            });
+        },
+        fallback: <span class="keyword">function</span>() {
+            <span class="keyword">this</span>.flushInline();
+            <span class="keyword">var</span> name = <span class="keyword">this</span>.topStackName(),
+                def = <span class="keyword">this</span>.popStack();
+            <span class="keyword">this</span>.source.push(<span class="string">'if (!'</span> + name + <span class="string">' &amp;&amp; '</span> + name + <span class="string">' !== 0) { '</span> + name + <span class="string">' = '</span> + def + <span class="string">'; }'</span>);
+        },
+        replaceStack: <span class="keyword">function</span>(callback) {
+            <span class="keyword">var</span> prefix = <span class="string">''</span>,
+                inline = <span class="keyword">this</span>.isInline(),
+                stack;
+            <span class="keyword">if</span> (inline) {
+                <span class="keyword">var</span> top = <span class="keyword">this</span>.popStack(<span class="literal">true</span>);
+                <span class="keyword">if</span> (top <span class="keyword">instanceof</span> Literal) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-72">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-72">&#182;</a>
+              </div>
+              <p>Literals do not need to be inlined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    stack = top.value;
+                } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-73">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-73">&#182;</a>
+              </div>
+              <p>Get or create the current stack name for use by the inline</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    <span class="keyword">var</span> name = <span class="keyword">this</span>.stackSlot ? <span class="keyword">this</span>.topStackName() : <span class="keyword">this</span>.incrStack();
+                    prefix = <span class="string">'('</span> + <span class="keyword">this</span>.push(name) + <span class="string">' = '</span> + top + <span class="string">'),'</span>;
+                    stack = <span class="keyword">this</span>.topStack();
+                }
+            } <span class="keyword">else</span> {
+                stack = <span class="keyword">this</span>.topStack();
+            }
+            <span class="keyword">var</span> item = callback.call(<span class="keyword">this</span>, stack);
+            <span class="keyword">if</span> (inline) {
+                <span class="keyword">if</span> (<span class="keyword">this</span>.inlineStack.length || <span class="keyword">this</span>.compileStack.length) {
+                    <span class="keyword">this</span>.popStack();
+                }
+                <span class="keyword">this</span>.push(<span class="string">'('</span> + prefix + item + <span class="string">')'</span>);
+            } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-74">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-74">&#182;</a>
+              </div>
+              <p>Prevent modification of the context depth variable.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                if (!/stack/.test(stack)) {
+                    stack = this.nextStack();
+                }
+                this.source.push(stack + ' = (' + prefix + item + ');');
+            }
+            return stack;
+        },
+        flushInline: function() {
+            var inlineStack = this.inlineStack,
+                i = 0,
+                l = inlineStack.length,
+                entry;
+            if (l) {
+                this.inlineStack = [];
+                for (; i &lt; l; i += 1) {
+                    entry = inlineStack[i];
+                    if (entry instanceof Literal) {
+                        this.compileStack.push(entry);
+                    } else {
+                        this.pushStack(entry);
+                    }
+                }
+            }
+        },
+        popStack: function(wrapped) {
+            var inline = this.isInline(),
+                item = (inline ? this.inlineStack : this.compileStack).pop();
+            if (!wrapped &amp;&amp; (item instanceof Literal)) {
+                return item.value;
+            }
+            if (!inline) {
+                this.stackSlot--;
+            }
+            return item;
+        },
+        isInline: function() {
+            return this.inlineStack.length;
+        },
+        topStack: function(wrapped) {
+            var stack = (this.isInline() ? this.inlineStack : this.compileStack),
+                item = stack[stack.length - 1];
+            if (!wrapped &amp;&amp; (item instanceof Literal)) {
+                return item.value;
+            } else {
+                return item;
+            }
         },
         quotedString: function(str) {
             return '"' + str
@@ -2812,18 +3122,6 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
                 .replace(/\r/g, '\\r')
                 .replace(/\u2028/g, '\\u2028')
                 .replace(/\u2029/g, '\\u2029') + '"';
-        },
-        appendToBuffer: function(str) {
-            if (this.env.isSimple) {
-                return 'return ' + str + ';';
-            }
-            return {
-                appendToBuffer: true,
-                content: str,
-                toString: function() {
-                    return "buffer += " + str + ";";
-                }
-            };
         },
         mergeSource: function() {
             var source = '',
@@ -2848,17 +3146,186 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
                 }
             }
             return source;
+        },
+        pushStackLiteral: function(item) {
+            return this.push(new Literal(item));
+        },
+        pushStack: function(item) {
+            this.flushInline();
+            var stack = this.incrStack();
+            if (item) {
+                this.source.push(stack + '=' + item + ';');
+            }
+            this.compileStack.push(stack);
+            return stack;
+        },
+        nextStack: function() {
+            return this.pushStack();
+        },
+        incrStack: function() {
+            this.stackSlot++;
+            if (this.stackSlot &gt; this.stackVars.length) {
+                this.stackVars.push('stack' + this.stackSlot);
+            }
+            return this.topStackName();
+        },
+        topStackName: function() {
+            return 'stack' + this.stackSlot;
         }
+    };
+    var reservedWords = (
+        "break else new var" +
+        " case finally return void" +
+        " catch for switch while" +
+        " continue function this with" +
+        " default if throw" +
+        " delete in try" +
+        " do instanceof typeof" +
+        " abstract enum int short" +
+        " boolean export interface static" +
+        " byte extends long super" +
+        " char final native synchronized" +
+        " class float package throws" +
+        " const goto private transient" +
+        " debugger implements protected volatile" +
+        " double import public let yield"
+    ).split(" ");
+    var compilerWords = JSCompiler.RESERVED_WORDS = {};
+    for (var i = 0, l = reservedWords.length; i &lt; l; i++) {
+        compilerWords[reservedWords[i]] = true;
+    }
+    JSCompiler.isValidVarName = function(name) {
+        if (!JSCompiler.RESERVED_WORDS[name] &amp;&amp; /^[a-zA-Z_$][0-9a-zA-Z_$]+$/.test(name)) {
+            return true;
+        }
+        return false;
     };</pre></div></div>
             
         </li>
         
         
-        <li id="section-65">
+        <li id="section-75">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-65">&#182;</a>
+                <a class="pilcrow" href="#section-75">&#182;</a>
+              </div>
+              <h2>Beard.VM</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-76">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-76">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Beard.VM = {
+        template: <span class="keyword">function</span>(tplSpec) {
+            <span class="keyword">var</span> container = {
+                escapeExpression: Beard.Utils.escapeExpression,
+                invokeElement: Beard.VM.invokeElement,
+                programs: [],
+                program: <span class="keyword">function</span>(i, fn, data) {
+                    <span class="keyword">var</span> programWrapper = <span class="keyword">this</span>.programs[i];
+                    <span class="keyword">if</span> (data) {
+                        programWrapper = Beard.VM.program(i, fn, data);
+                    } <span class="keyword">else</span> <span class="keyword">if</span> (!programWrapper) {
+                        programWrapper = <span class="keyword">this</span>.programs[i] = Beard.VM.program(i, fn);
+                    }
+                    <span class="keyword">return</span> programWrapper;
+                },
+                merge: <span class="keyword">function</span>(param, common) {
+                    <span class="keyword">var</span> ret = param || common;
+                    <span class="keyword">if</span> (param &amp;&amp; common &amp;&amp; (param !== common)) {
+                        ret = {};
+                        Beard.Utils.extend(ret, common);
+                        Beard.Utils.extend(ret, param);
+                    }
+                    <span class="keyword">return</span> ret;
+                },
+                programWithDepth: Beard.VM.programWithDepth,
+                noop: Beard.VM.noop
+            };
+            <span class="keyword">return</span> <span class="keyword">function</span>(context, options) {
+                options = options || {};
+                <span class="keyword">var</span> namespace = options.element ? options : Beard,
+                    helpers,
+                    elements;
+                <span class="keyword">if</span> (!options.element) {
+                    helpers = options.helpers;
+                    elements = options.elements;
+                }
+                <span class="keyword">var</span> result = tplSpec.call(
+                    container,
+                    namespace,
+                    context,
+                    helpers,
+                    elements,
+                    options.data
+                );
+                <span class="keyword">return</span> result;
+            };
+        },
+        programWithDepth: <span class="keyword">function</span>(i, fn, data <span class="comment">/*, $depth */</span> ) {
+            <span class="keyword">var</span> args = Array.protorype.slice.call(arguments, <span class="number">3</span>),
+                program = <span class="keyword">function</span>(context, options) {
+                    options = options || {};
+                    <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, [context, options.data || data].concat(args));
+                };
+            program.program = i;
+            program.depth = args.length;
+            <span class="keyword">return</span> program;
+        },
+        program: <span class="keyword">function</span>(i, fn, data) {
+            <span class="keyword">var</span> program = <span class="keyword">function</span>(context, options) {
+                options = options || {};
+                <span class="keyword">return</span> fn(context, options.data || data);
+            };
+            program.program = i;
+            program.depth = <span class="number">0</span>;
+            <span class="keyword">return</span> program;
+        },
+        noop: <span class="keyword">function</span>() {
+            <span class="keyword">return</span> <span class="string">''</span>;
+        },
+        invokeElement: <span class="keyword">function</span>(element, name, context, helpers, elements, data) {
+            <span class="keyword">var</span> options = {
+                element: <span class="literal">true</span>,
+                helpers: helpers,
+                elements: elements,
+                data: data
+            };
+            <span class="keyword">if</span> (element === <span class="literal">undefined</span>) {
+                <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'The element '</span> + name + <span class="string">' could not be found'</span>);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (element <span class="keyword">instanceof</span> Function) {
+                <span class="keyword">return</span> element(context, options);
+            } <span class="keyword">else</span> <span class="keyword">if</span> (!Beard.compile) {
+                <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'The element '</span> + name + <span class="string">'could not be compiled when running in runtime-only mode'</span>);
+            } <span class="keyword">else</span> {
+                elements[name] = Beard.compile(element, {
+                    data: data !== <span class="literal">undefined</span>
+                });
+                <span class="keyword">return</span> elements[name](context, options);
+            }
+        }
+    };
+    Beard.template = Beard.VM.template;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-77">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-77">&#182;</a>
               </div>
               <h2>Helpers</h2>
 
@@ -2867,11 +3334,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         </li>
         
         
-        <li id="section-66">
+        <li id="section-78">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-66">&#182;</a>
+                <a class="pilcrow" href="#section-78">&#182;</a>
               </div>
               
             </div>
@@ -2889,11 +3356,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         </li>
         
         
-        <li id="section-67">
+        <li id="section-79">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-67">&#182;</a>
+                <a class="pilcrow" href="#section-79">&#182;</a>
               </div>
               <h3>Core Helpers</h3>
 
@@ -2918,11 +3385,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         </li>
         
         
-        <li id="section-68">
+        <li id="section-80">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-68">&#182;</a>
+                <a class="pilcrow" href="#section-80">&#182;</a>
               </div>
               <p>Iterate through the array</p>
 
@@ -2971,11 +3438,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         </li>
         
         
-        <li id="section-69">
+        <li id="section-81">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-69">&#182;</a>
+                <a class="pilcrow" href="#section-81">&#182;</a>
               </div>
               <p>We&#39;ve got hash</p>
 
@@ -3007,11 +3474,11 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
         </li>
         
         
-        <li id="section-70">
+        <li id="section-82">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-70">&#182;</a>
+                <a class="pilcrow" href="#section-82">&#182;</a>
               </div>
               <p>Otherwise, let&#39;s check if passed data is truthy/falsy</p>
 
@@ -3027,7 +3494,97 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
             result = env.result;
         }
         <span class="keyword">return</span> result.join(<span class="string">''</span>);
-    }, <span class="literal">true</span>);
+    }, <span class="literal">true</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-83">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-83">&#182;</a>
+              </div>
+              <p>Basic SafeString type</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Beard.SafeString = <span class="keyword">function</span>(str) {
+        <span class="keyword">this</span>.string = str;
+    };
+    Beard.SafeString.prototype.toString = <span class="keyword">function</span>() {
+        <span class="keyword">return</span> <span class="string">''</span> + <span class="keyword">this</span>.string;
+    };
+    <span class="keyword">var</span> escape = {
+        <span class="string">'&amp;'</span>: <span class="string">'&amp;amp;'</span>,
+        <span class="string">'&lt;'</span>: <span class="string">'&amp;lt;'</span>,
+        <span class="string">'&gt;'</span>: <span class="string">'&amp;gt;'</span>,
+        <span class="string">'"'</span>: <span class="string">'&amp;quot;'</span>,
+        <span class="string">"'"</span>: <span class="string">'&amp;#x27'</span>,
+        <span class="string">'`'</span>: <span class="string">'&amp;#x60'</span>
+    };
+    <span class="keyword">var</span> badChars = <span class="regexp">/[&amp;&lt;&gt;"'`]/g</span>;
+    <span class="keyword">var</span> possible = <span class="regexp">/[&amp;&lt;&gt;"'`]/</span>;
+    <span class="keyword">var</span> escapeChar = <span class="keyword">function</span>(chr) {
+        <span class="keyword">return</span> escape[chr] || <span class="string">'&amp;amp;'</span>;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-84">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-84">&#182;</a>
+              </div>
+              <h2>Beard.Utils</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-85">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-85">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Beard.Utils = {
+        extend: <span class="keyword">function</span>(obj, value) {
+            <span class="keyword">var</span> key;
+            <span class="keyword">for</span> (key <span class="keyword">in</span> value) {
+                <span class="keyword">if</span> (value.hasOwnProperty(key)) {
+                    obj[key] = value[key];
+                }
+            }
+        },
+        escapeExpression: <span class="keyword">function</span>(str) {
+            <span class="keyword">if</span> (str <span class="keyword">instanceof</span> Beard.SafeString) {
+                <span class="keyword">return</span> str.toString();
+            } <span class="keyword">else</span> <span class="keyword">if</span> (!str &amp;&amp; str !== <span class="number">0</span>) {
+                <span class="keyword">return</span> <span class="string">''</span>;
+            }
+            str = <span class="string">''</span> + str;
+            <span class="keyword">if</span> (!possible.test(str)) {
+                <span class="keyword">return</span> str;
+            }
+            <span class="keyword">return</span> str.replace(badChars, escapeChars);
+        },
+        isEmpty: <span class="keyword">function</span>(value) {
+            <span class="keyword">if</span> (!value &amp;&amp; value !== <span class="number">0</span>) {
+                <span class="keyword">return</span> <span class="literal">true</span>;
+            }
+            <span class="keyword">if</span> (isArray(value) &amp;&amp; value.length === <span class="number">0</span>) {
+                <span class="keyword">return</span> <span class="literal">true</span>;
+            }
+            <span class="keyword">return</span> <span class="literal">false</span>;
+        }
+    };
     Beard.parse = <span class="keyword">function</span>(input) {
         Beard.Parser.yy = Beard.AST;
         <span class="keyword">return</span> Beard.Parser.parse(input);
@@ -3048,15 +3605,6 @@ otherwise, its <code>String</code> representation. The default is <code>False</c
             variables: [],
             elements: []
         });
-    };
-    Beard.evaluateElement = <span class="keyword">function</span>(input, options) {
-        <span class="keyword">return</span> Beard.compile(input, options);
-    };
-    Beard.template = <span class="keyword">function</span>(tplSpec) {
-        <span class="keyword">return</span> <span class="keyword">function</span>(context, options) {
-            <span class="keyword">var</span> result = tplSpec.call();
-            <span class="keyword">return</span> result;
-        };
     };
     <span class="keyword">this</span>.Beard = Beard;
 }).call(<span class="keyword">this</span>);</pre></div></div>

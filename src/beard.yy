@@ -12,7 +12,7 @@ statements: statement -> [$1]
 statement: openBlock program closeBlock -> new yy.BlockNode($1, $2, $3)
          | inlineTag -> new yy.InlineNode($1)
          | elementTag -> new yy.ElementNode($1)
-         | variableTag -> $1
+         | dataTag -> new yy.DataNode($1)
          | CONTENT -> new yy.ContentNode($1)
          | COMMENT -> new yy.CommentNode($1)
          ;
@@ -64,18 +64,18 @@ closeBlock: END_BLOCK -> $1
 elementTag: OPEN_ELEMENT ID CLOSE -> $2
           ;
 
-variableTag: OPEN_VARIABLE data CLOSE -> $2
-           ;
+dataTag: OPEN_VARIABLE data CLOSE -> $2
+       ;
 
 data: var -> $1
     | func -> $1
     | param -> $1
     ;
 
-var: segments -> new yy.DataNode($1)
-   | segments ALT param -> new yy.DataNode($1, $3)
-   | func SEP segments -> new yy.DataNode([$1].concat($3))
-   | func SEP segments ALT param -> new yy.DataNode([$1].concat($3), $5)
+var: segments -> new yy.VariableNode($1)
+   | segments ALT param -> new yy.VariableNode($1, $3)
+   | func SEP segments -> new yy.VariableNode([$1].concat($3))
+   | func SEP segments ALT param -> new yy.VariableNode([$1].concat($3), $5)
    ;
 
 func: segments funcArgs -> new yy.FuncNode($1, $2)
