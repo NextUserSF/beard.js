@@ -1,46 +1,57 @@
-NODE_MODULES     = $(CURDIR)/node_modules
-NODE_MODULES_BIN = $(NODE_MODULES)/.bin
+PREPROCESS = cpp -P -C -w -x c
+JISON = jison -m js
+UGLIFY = uglifyjs
+UGLIFYARGS = -c -m --comments
 
-BOWER            = $(NODE_MODULES_BIN)/bower
-JSLINT           = $(NODE_MODULES_BIN)/jslint
-PHANTOMJS        = $(NODE_MODULES_BIN)/phantomjs
-SPEC             = $(CURDIR)/spec
-TEST_RUNNER      = $(SPEC)/runner.phantom.js
-UGLIFYJS         = $(NODE_MODULES_BIN)/uglifyjs
-UGLIFYJS_ARGS    = -c -m # see https://github.com/mishoo/UglifyJS2#usage for details
+SRCDIR = $(CURDIR)/src
+PARSER = $(SRCDIR)/parser.js
+GRAMMAR = $(SRCDIR)/beard.yy
+LEXER = $(SRCDIR)/beard.l
+SRC = $(filter-out $(PARSER), $(wildcard $(SRCDIR)/*.js))
+SRC_ENTRY_POINT = $(SRCDIR)/main.js
+ALLSRC = $(wildcard $(SRCDIR)/*.js)
 
-BOWER_COMPONENTS = $(CURDIR)/bower_components
+DESTDIR = $(CURDIR)/lib
+LIBDEBUG = $(DESTDIR)/beard.debug.js
+LIBPROD = $(DESTDIR)/beard.js
+LIBPRODMIN = $(DESTDIR)/beard.min.js
 
-SRC              = $(CURDIR)/src/*.js
-DEST             = $(CURDIR)/lib/beard.min.js
+DOCSDIR = $(CURDIR)/docs
+DOCS = $(DOCSDIR)/beard.html
 
-all: $(NODE_MODULES) lib
+SPECDIR = $(CURDIR)/spec
 
-lint: .lint
+all: $(LIBDEBUG) $(LIBPRODMIN) $(DOCS) specs
 
-.lint: $(SRC)
-	@$(JSLINT) $(wildcard $(SRC)) >/dev/null && touch $@
+$(DESTDIR):
+	mkdir $@
 
-lib: lint $(DEST)
+$(LIBDEBUG): $(ALLSRC) | $(DESTDIR)
+	$(PREPROCESS) -DDEBUG $(SRC_ENTRY_POINT) -o $@
 
-$(DEST): $(SRC)
-	@mkdir -p $(@D)
-	@$(UGLIFYJS) $^ $(UGLIFYJS_ARGS) -o $@
+$(LIBPROD): $(ALLSRC) | $(DESTDIR)
+	$(PREPROCESS) $(SRC_ENTRY_POINT) -o $@
 
-$(NODE_MODULES): package.json
-	@npm install
+$(LIBPRODMIN): $(LIBPROD)
+	$(UGLIFY) $? $(UGLIFYARGS) -o $@
 
-test: lib $(BOWER_COMPONENTS)
-	@cd $(SPEC); ${MAKE} || exit; cd ..
-	@$(PHANTOMJS) $(TEST_RUNNER)
+$(SRC): $(PARSER)
 
-$(BOWER_COMPONENTS): bower.json | $(NODE_MODULES)
-	@$(BOWER) install
+$(PARSER): $(GRAMMAR) $(LEXER)
+	$(JISON) $^ -o $@
+
+$(DOCS): $(LIBPROD) | $(DOCSDIR)
+	docco -o $(DOCSDIR) $<
+
+$(DOCSDIR):
+	mkdir $@
+
+specs:
+	cd $(SPECDIR); ${MAKE} || exit; cd ..
 
 clean:
-	@rm -rf $(DEST)
-	@rm -rf $(NODE_MODULES)
-	@rm -rf $(BOWER_COMPONENTS)
-	@rm -ff .lint
+	rm -rf $(DESTDIR)
+	rm -f $(PARSER)
+	rm -rf $(DOCSDIR)
 
-.PHONY: all clean lib lint test
+.PHONY: clean specs

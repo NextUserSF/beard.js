@@ -1,11 +1,11 @@
-COFFEE = $(CURDIR)/../node_modules/.bin/coffee
-SRC    = $(CURDIR)/*.coffee
-DST    = $(CURDIR)/specs.js
+CC = coffee -cj
+SRC = $(CURDIR)/*.coffee
+DST = $(CURDIR)/specs.js
 
 $(DST): $(SRC)
-	@$(COFFEE) -cj $(DST) $(SRC)
+	$(CC) -cj $@ $(SRC)
 
 clean:
-	@rm -rf $(DST)
+	rm -rf $(DST)
 
 .PHONY: clean
