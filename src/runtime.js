@@ -32,24 +32,13 @@ Beard.VM = {
             noop: Beard.VM.noop
         };
 
-        return function (context, options) {
-            options = options || {};
-            var namespace = options.element ? options : Beard,
-                helpers,
-                elements;
-
-            if (!options.element) {
-                helpers = options.helpers;
-                elements = options.elements;
-            }
-
+        return function (variables, elements) {
             var result = tplSpec.call(
                 container,
-                namespace,
-                context,
-                helpers,
-                elements,
-                options.data
+                Beard,
+                variables,
+                Beard.helpers,
+                elements
             );
 
             return result;
@@ -87,24 +76,9 @@ Beard.VM = {
         return '';
     },
 
-    invokeElement: function (element, name, context, helpers, elements, data) {
-        var options = {
-            element: true,
-            helpers: helpers,
-            elements: elements,
-            data: data
-        };
-
-        if (element === undefined) {
-            throw new Error('The element ' + name + ' could not be found');
-        } else if (element instanceof Function) {
-            return element(context, options);
-        } else if (!Beard.compile) {
-            throw new Error('The element ' + name + 'could not be compiled when running in runtime-only mode');
-        } else {
-            elements[name] = Beard.compile(element, {data: data !== undefined});
-            return elements[name](context, options);
-        }
+    invokeElement: function (element, variables, elements) {
+        var template = Beard.compile(element);
+        return template(variables, elements);
     }
 };
 

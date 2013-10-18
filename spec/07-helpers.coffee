@@ -10,13 +10,11 @@ describe 'Helpers', ->
 
   describe 'Block Helpers', ->
     beforeEach ->
-      Beard.registerHelper 'block', (args, program, options) ->
-        data = args[0]
+      Beard.registerHelper 'block', (data, options) ->
+        data = data[0]
         data = data.toUpperCase() if data?
-        options.variables.data = data
-        env = new Beard.Compiler().compile program, options
-        env.result.join ''
-        , true
+        this.data = data
+        options.fn(this)
 
     it 'should compile program', ->
       tpl.set '<% block %>Helper<% endblock %>'
@@ -42,6 +40,10 @@ describe 'Helpers', ->
 
       expect(ret).toEqual 'data is DATA'
 
+    it 'should throw an error if helper is missing', ->
+      tpl.set '<% missing %>Test<% endmissing %>'
+      expect(-> tpl.render()).toThrow()
+
   describe 'Inline Helpers', ->
     beforeEach ->
       Beard.registerHelper 'inline', (args, options) -> 'Inline'
@@ -49,7 +51,7 @@ describe 'Helpers', ->
         x.toUpperCase() if typeof x == 'string'
       ).join(' ')
       Beard.registerHelper 'asset', (args, options) ->
-        options.variables['new_var'] = 'New Variable'
+        this.new_var = 'New Variable'
         return
 
     it 'should return correct value', ->

@@ -33,6 +33,14 @@ Beard.AST.VariableNode = function (variable, def) {
     this.isSimple = variable.length === 1;
 };
 
+Beard.AST.FuncNode = function (func, args, def) {
+    this.type = 'func';
+    this.parts = func;
+    this.string = func.join('.');
+    this.args = args;
+    this.def = def || '';
+};
+
 Beard.AST.CommentNode = function (comment) {
     this.type = 'comment';
     this.comment = comment;
@@ -62,13 +70,6 @@ Beard.AST.InlineNode = function (helper) {
 Beard.AST.StringNode = function (string) {
     this.type = 'STRING';
     this.string = this.stringModeValue = string;
-};
-
-Beard.AST.FuncNode = function (func, args, def) {
-    this.type = 'func';
-    this.func = func;
-    this.args = args;
-    this.def = def;
 };
 
 Beard.AST.IntegerNode = function (integer) {

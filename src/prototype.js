@@ -19,7 +19,7 @@ Beard.prototype = {
 
         var template = Beard.compile(this.tpl);
 
-        return template(this.data);
+        return template(this.data, this.elements);
     },
 
     // Returns an object containing an array of variables, and an array of elements:

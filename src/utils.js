@@ -1,3 +1,18 @@
+function isFunction (value) {
+    return typeof value === 'function';
+};
+
+// fallback for older versions of Chrome and Safari
+if (isFunction(/x/)) {
+    isFunction = function (value) {
+        return typeof value === 'function' && toString.call(value) === '[object Function]';
+    };
+}
+
+function isArray (value) {
+    return (value && typeof value === 'object') ? toString.call(value) === '[object Array]' : false;
+};
+
 // Basic SafeString type
 Beard.SafeString = function (str) {
     this.string = str;
@@ -19,7 +34,7 @@ var escape = {
 var badChars = /[&<>"'`]/g;
 var possible = /[&<>"'`]/;
 
-var escapeChar = function (chr) {
+var escapeChars = function (chr) {
     return escape[chr] || '&amp;';
 };
 

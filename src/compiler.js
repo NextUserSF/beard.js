@@ -4,40 +4,64 @@ var Compiler = Beard.Compiler = function () {};
 
 Compiler.prototype = {
     compiler: Compiler,
-    disassemble: function () {
-        var opcodes = this.opcodes,
+    guid: 0,
+
+    equals: function (other) {
+        var l = this.opcodes.length,
             i = 0,
             j = 0,
-            l = opcodes.length,
             opcode,
-            out = [],
-            params = [],
-            param;
+            otherOpcode;
+
+        if (other.opcodes.length !== l) {
+            return false;
+        }
 
         for (; i < l; i += 1) {
-            opcode = opcodes[i];
+            opcode = this.opcodes[i];
+            otherOpcode = other.opcodes[i];
 
-            if (opcode.opcode === 'DECLARE') {
-                out.push('DECLARE ' + opcode.name + '=' + opcode.value);
-            } else {
-                for (; j < opcode.args.length; j += 1) {
-                    param = opcode.args[j];
-                    if (typeof param === 'string') {
-                        param = '"' + param.replace('\n', '\\n') + '"';
-                    }
-                    params.push(param);
+            if (opcode.opcode !== otherOpcode.opcode || opcode.args.length !== otherOpcode.args.length) {
+                return false;
+            }
+
+            for (; j < opcode.args.length; j += 1) {
+                if (opcode.args[j] !== otherOpcode.args[j]) {
+                    return false;
                 }
-                out.push(opcode.opcode + ' ' + params.join(' '));
             }
         }
 
-        return out.join('\n');
+        l = this.children.length;
+        if (other.children.length !== l) {
+            return false;
+        }
+
+        for (i = 0; i < l; i += 1) {
+            if (!this.children[i].equals(other.children[i])) {
+                return false;
+            }
+        }
+
+        return true;
     },
 
     compile: function (program, options) {
         this.children = [];
         this.depths = {list: []};
         this.options = options;
+
+        var knownHelpers = this.options.knownHelpers;
+        this.options.knownHelpers = {
+            'foreach': true,
+            'if': true
+        };
+
+        if (knownHelpers) {
+            for (var name in knownHelpers) {
+                this.options.knownHelpers[name] = knownHelpers[name];
+            }
+        }
 
         return this.program(program);
     },
@@ -54,7 +78,7 @@ Compiler.prototype = {
         for (i; i < l; i += 1) {
             statement = statements[i];
 #ifdef DEBUG
-            console.debug(statement);
+            console.log('STATEMENT:', statement);
 #endif
             this[statement.type](statement);
         }
@@ -68,13 +92,23 @@ Compiler.prototype = {
         return this;
     },
 
+    compileProgram: function (program) {
+        var result = new this.compiler().compile(program, this.options),
+            guid = this.guid++;
+
+        this.useElement = this.useElement || result.useElement;
+        this.children[guid] = result;
+
+        return guid;
+    },
+
     // Compile element
     element: function (element) {
-        if (this.options.elements[element.id]) {
-            return Beard.evaluateElement(this.options.elements[element.id], this.options);
-        }
+        this.useElement = true;
 
-        return "Element " + element.id + " not found";
+        this.opcode('push', 'depth0');
+        this.opcode('invokeElement', element.id);
+        this.opcode('append');
     },
 
     // Compile content node
@@ -97,11 +131,19 @@ Compiler.prototype = {
         if (!name) {
             this.opcode('pushContext');
         } else {
-            this.opcode('lookupOnContext', variable.parts[0]);
+            if (typeof variable.parts[0] === 'object') {
+                this[variable.parts[0].type](variable.parts[0]);
+            } else {
+                this.opcode('lookupOnContext', variable.parts[0]);
+            }
         }
 
         for (; i < l; i += 1) {
-            this.opcode('lookup', variable.parts[i]);
+            if (typeof variable.parts[i] === 'object') {
+                this[variable.parts[i].type](variable.parts[i]);
+            } else {
+                this.opcode('lookup', variable.parts[i]);
+            }
         }
 
         if (variable.def) {
@@ -112,57 +154,53 @@ Compiler.prototype = {
 
     // Compile function call
     func: function (func) {
-        var i = 0,
-            l = func.func.length,
-            parent,
-            fn = parent = this.options.variables,
-            key;
+        var name = func.parts[0],
+            i = 1,
+            l = func.parts.length;
 
-        for (; i < l; i += 1) {
-            key = func.func[i];
-            parent = fn;
-            // Handle Funciton-Variable mixture
-            if (typeof key !== 'string' && key.constructor === Beard.AST.FuncNode) {
-                fn = this[key.type](key);
+        if (!name) {
+            this.opcode('pushContext');
+        } else {
+            if (typeof func.parts[0] === 'object') {
+                this[func.parts[0].type](func.parts[0]);
             } else {
-                fn = fn[key];
-            }
-
-            if (typeof fn === 'undefined') {
-                if (func.def) {
-                    return this[func.def.type](func.def);
-                }
-
-                return;
+                this.opcode('lookupOnContext', func.parts[0]);
             }
         }
 
-        // `parent` is the function's `this`:
-        //
-        //     data = {
-        //         first_name: 'John',
-        //         last_name: 'Doe',
-        //         full_name: function () {
-        //             return this.first_name + ' ' + this.last_name;
-        //             // return "John Doe"
-        //         },
-        //         nested: {
-        //             first_name: 'Robert',
-        //             last_name: 'Roe',
-        //             full_name: function () {
-        //                 return this.first_name + ' ' + this.last_name;
-        //                 // return "Robert Roe"
-        //             }
-        //         }
-        //     }
-        return fn.apply(parent, this.args(func.args));
+        for (; i < l; i += 1) {
+            if (typeof func.parts[i] === 'object') {
+                this[func.parts[i].type](func.parts[i]);
+            } else {
+                this.opcode('lookup', func.parts[i]);
+            }
+        }
+
+        if (!Beard.Utils.isEmpty(func.args)) {
+            this.args(func.args);
+            this.opcode('pushArgs', func.args.length);
+        } else {
+            this.opcode('pushArgs', 0);
+        }
+
+        this.opcode('funcCall');
+
+        if (func.def) {
+            this[func.def.type](func.def);
+            this.opcode('fallback');
+        }
     },
 
     // Compile function's arguments
     args: function (args) {
-        return args.map(function (v) {
-            return this[v.type](v);
-        }, this);
+        var i = 0,
+            l = args.length,
+            arg;
+
+        for (; i < l; i += 1) {
+            arg = args[i];
+            this[arg.type](arg);
+        }
     },
 
     // Compile comment
@@ -171,40 +209,70 @@ Compiler.prototype = {
     // Compile block instructions code
     block: function (block) {
         var helper = block.helper,
-            // Compile helper and its arguments or data
-            args = block.args.map(function (item) {
-                if (typeof item !== 'string') {
-                    return this[item.type](item);
-                }
-                return item;
-            }, this),
-            program = block.program;
+            args = block.args || [],
+            program = block.program,
+            inverse = program.inverse;
 
-        return Beard.BlockHelpers[helper](args, program, this.options);
+        program = this.compileProgram(program);
+
+        if (inverse) {
+            inverse = this.compileProgram(inverse);
+        }
+
+        this.opcode('pushProgram', program);
+        this.opcode('pushProgram', inverse);
+
+        if (args.length) {
+            this.args(args);
+        }
+
+        this.opcode('pushArgs', args.length);
+
+        if (this.options.knownHelpers[helper]) {
+            this.opcode('invokeKnownHelper', helper, true);
+        } else {
+            this.opcode('invokeHelper', helper, true);
+        }
+
+        this.opcode('append');
     },
 
     // Compile inline
     inline: function (inline) {
         var helper = inline.helper,
-            // Compile helper and its arguments or data
-            args = inline.args.map(function (item) {
-                if (typeof item !== 'string') {
-                    return this[item.type](item);
-                }
-                return item;
-            }, this);
+            args = inline.args;
 
-        return Beard.Helpers[helper](args, this.options);
+        if (args.length) {
+            this.args(args);
+        }
+
+        this.opcode('pushArgs', args.length);
+
+        if (this.options.knownHelpers[helper]) {
+            this.opcode('invokeKnownHelper', helper);
+        } else {
+            this.opcode('invokeHelper', helper);
+        }
+
+        this.opcode('append');
     },
 
     // Compile hash
     hash: function (hash) {
-        return hash.pairs.map(function (item) {
+        var i = 0,
+            l = hash.pairs.length,
+            item;
+
+        for (; i < l; i += 1) {
+            item = hash.pairs[i];
             if (typeof item !== 'string') {
-                return this[item.type](item, true);
+                this[item.type](item);
+            } else {
+                this.opcode('pushLiteral', item);
             }
-            return item;
-        }, this);
+        }
+
+        this.opcode('pushHash', l);
     },
 
     // Compile string parameter
@@ -238,16 +306,20 @@ Beard.compile = function (input, options) {
     function compile () {
         var ast = Beard.parse(input),
             env = new Compiler().compile(ast, options),
-            tplSpec = new Beard.JSCompiler().compile(env, options);
+            tplSpec = new Beard.JSCompiler().compile(env, options, undefined, true);
+
+#ifdef DEBUG
+        console.log('TEMPLATE SPEC:', tplSpec);
+#endif
 
         return Beard.template(tplSpec);
     };
 
-    return function (context, options) {
+    return function (variables, elements) {
         if (!compiled) {
             compiled = compile();
         }
 
-        return compiled.call(this, context, options);
+        return compiled.call(this, variables, elements);
     };
 };

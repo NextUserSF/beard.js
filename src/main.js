@@ -50,7 +50,9 @@
         return ast.statements.reduce(function (previous, current) {
             switch (current.constructor) {
                 case Beard.AST.DataNode:
-                    previous.variables.push(current.variable[0]);
+                    if (current.data.constructor === Beard.AST.VariableNode) {
+                        previous.variables.push(current.data.parts[0]);
+                    }
                     break;
                 case Beard.AST.ElementNode:
                     previous.elements.push(current.id);

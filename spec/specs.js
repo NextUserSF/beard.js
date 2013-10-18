@@ -174,7 +174,7 @@
           }
         });
         ret = tpl.render();
-        return expect(ret).toEqual('John Doe');
+        return expect(ret).toEqual('Robert Roe');
       });
     });
     describe('Nested Function Call with Arguments', function() {
@@ -359,12 +359,12 @@
       it('should return Integer', function() {
         tpl.set('<%= variable | 1024 %>');
         ret = tpl.render();
-        return expect(ret).toEqual('1024');
+        return expect(ret).toBe(1024);
       });
       return it('should return Boolean', function() {
         tpl.set('<%= variable | true %>');
         ret = tpl.render();
-        return expect(ret).toEqual('true');
+        return expect(ret).toBe(true);
       });
     });
   });
@@ -511,51 +511,14 @@
     afterEach(function() {
       return tpl = null;
     });
-    describe('Equals = (variable — parameter)', function() {
+    describe('Equals == (no Else)', function() {
       beforeEach(function() {
-        return tpl.set('<% if v1 = true %>True<% else %>False<% endif %>');
+        return tpl.set('<% if v1 == true %>True<% endif %>');
       });
-      it('should return correct value', function() {
+      return it('should return correct value', function() {
         tpl.addVariable('v1', 1);
         ret = tpl.render();
         return expect(ret).toEqual('True');
-      });
-      return it('should return alternate value', function() {
-        tpl.addVariable('v1', 0);
-        ret = tpl.render();
-        return expect(ret).toEqual('False');
-      });
-    });
-    describe('Equals = (parameter — variable)', function() {
-      beforeEach(function() {
-        return tpl.set('<% if true = v1 %>True<% else %>False<% endif %>');
-      });
-      it('should return correct value', function() {
-        tpl.addVariable('v1', 1);
-        ret = tpl.render();
-        return expect(ret).toEqual('True');
-      });
-      return it('should return alternate value', function() {
-        tpl.addVariable('v1', 0);
-        ret = tpl.render();
-        return expect(ret).toEqual('False');
-      });
-    });
-    describe('Equals = (variable — variable)', function() {
-      beforeEach(function() {
-        return tpl.set('<% if v1 = v2 %>True<% else %>False<% endif %>');
-      });
-      it('should return correct value', function() {
-        tpl.addVariable('v1', 1);
-        tpl.addVariable('v2', 1);
-        ret = tpl.render();
-        return expect(ret).toEqual('True');
-      });
-      return it('should return alternate value', function() {
-        tpl.addVariable('v1', 1);
-        tpl.addVariable('v2', 0);
-        ret = tpl.render();
-        return expect(ret).toEqual('False');
       });
     });
     describe('Equals == (variable — parameter)', function() {
@@ -936,15 +899,13 @@
     });
     describe('Block Helpers', function() {
       beforeEach(function() {
-        return Beard.registerHelper('block', function(args, program, options) {
-          var data, env;
-          data = args[0];
+        return Beard.registerHelper('block', function(data, options) {
+          data = data[0];
           if (data != null) {
             data = data.toUpperCase();
           }
-          options.variables.data = data;
-          env = new Beard.Compiler().compile(program, options);
-          return env.result.join('', true);
+          this.data = data;
+          return options.fn(this);
         });
       });
       it('should compile program', function() {
@@ -964,11 +925,17 @@
           return tpl.render();
         }).toThrow();
       });
-      return it('should access «local» and «global» variables', function() {
+      it('should access «local» and «global» variables', function() {
         tpl.set('<% block v1 %><%= v1 %> is <%= data %><% endblock %>');
         tpl.addVariable('v1', 'data');
         ret = tpl.render();
         return expect(ret).toEqual('data is DATA');
+      });
+      return it('should throw an error if helper is missing', function() {
+        tpl.set('<% missing %>Test<% endmissing %>');
+        return expect(function() {
+          return tpl.render();
+        }).toThrow();
       });
     });
     return describe('Inline Helpers', function() {
@@ -984,7 +951,7 @@
           }).join(' ');
         });
         return Beard.registerHelper('asset', function(args, options) {
-          options.variables['new_var'] = 'New Variable';
+          this.new_var = 'New Variable';
         });
       });
       it('should return correct value', function() {

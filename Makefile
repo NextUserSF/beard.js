@@ -31,7 +31,6 @@ $(LIBDEBUG): $(ALLSRC) | $(DESTDIR)
 
 $(LIBPROD): $(ALLSRC) | $(DESTDIR)
 	$(PREPROCESS) $(SRC_ENTRY_POINT) -o $@
-	js-beautify -f $@ -o $@
 
 $(LIBPRODMIN): $(LIBPROD)
 	$(UGLIFY) $? $(UGLIFYARGS) -o $@

@@ -149,7 +149,7 @@ describe 'Data Tag', ->
 
       ret = tpl.render()
 
-      expect(ret).toEqual 'John Doe'
+      expect(ret).toEqual 'Robert Roe'
 
   describe 'Nested Function Call with Arguments', ->
     it 'should return correct value', ->
@@ -282,10 +282,10 @@ describe 'Data Tag', ->
       tpl.set '<%= variable | 1024 %>'
       ret = tpl.render()
 
-      expect(ret).toEqual '1024'
+      expect(ret).toBe 1024
 
     it 'should return Boolean', ->
       tpl.set '<%= variable | true %>'
       ret = tpl.render()
 
-      expect(ret).toEqual 'true'
+      expect(ret).toBe true

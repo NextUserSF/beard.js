@@ -8,55 +8,15 @@ describe 'If-Else Helper', ->
   afterEach ->
     tpl = null
 
-  describe 'Equals = (variable — parameter)', ->
+  describe 'Equals == (no Else)', ->
     beforeEach ->
-      tpl.set '<% if v1 = true %>True<% else %>False<% endif %>'
+      tpl.set '<% if v1 == true %>True<% endif %>'
 
     it 'should return correct value', ->
       tpl.addVariable 'v1', 1
       ret = tpl.render()
 
       expect(ret).toEqual 'True'
-
-    it 'should return alternate value', ->
-      tpl.addVariable 'v1', 0
-      ret = tpl.render()
-
-      expect(ret).toEqual 'False'
-
-  describe 'Equals = (parameter — variable)', ->
-    beforeEach ->
-      tpl.set '<% if true = v1 %>True<% else %>False<% endif %>'
-
-    it 'should return correct value', ->
-      tpl.addVariable 'v1', 1
-      ret = tpl.render()
-
-      expect(ret).toEqual 'True'
-
-    it 'should return alternate value', ->
-      tpl.addVariable 'v1', 0
-      ret = tpl.render()
-
-      expect(ret).toEqual 'False'
-
-  describe 'Equals = (variable — variable)', ->
-    beforeEach ->
-      tpl.set '<% if v1 = v2 %>True<% else %>False<% endif %>'
-
-    it 'should return correct value', ->
-      tpl.addVariable 'v1', 1
-      tpl.addVariable 'v2', 1
-      ret = tpl.render()
-
-      expect(ret).toEqual 'True'
-
-    it 'should return alternate value', ->
-      tpl.addVariable 'v1', 1
-      tpl.addVariable 'v2', 0
-      ret = tpl.render()
-
-      expect(ret).toEqual 'False'
 
   describe 'Equals == (variable — parameter)', ->
     beforeEach ->

@@ -18,7 +18,7 @@ JSCompiler.prototype = {
             return parent + '.' + name;
         }
 
-        return parent + '[' + name + ']';
+        return parent + "['" + name + "']";
     },
 
     appendToBuffer: function (str) {
@@ -38,9 +38,17 @@ JSCompiler.prototype = {
         return this.quotedString('');
     },
 
-    compile: function (env, options) {
+    compile: function (env, options, context, asObject) {
         this.env = env;
         this.options = options || {};
+
+        this.name = this.env.name;
+        this.isChild = !!context;
+        this.context = context || {
+            programs: [],
+            envs: [],
+            aliases: {}
+        };
 
         this.preamble();
 
@@ -50,9 +58,8 @@ JSCompiler.prototype = {
         this.compileStack = [];
         this.inlineStack = [];
 
-#ifdef DEBUG
-        console.debug(this.env.disassemble());
-#endif
+        this.compileChildren(env, options);
+
         var opcodes = env.opcodes,
             opcode,
             l = opcodes.length;
@@ -60,14 +67,13 @@ JSCompiler.prototype = {
         for (; this.i < l; this.i += 1) {
             opcode = opcodes[this.i];
 
-            if (opcode.opcode === 'DECLARE') {
-                this[opcode.name] = opcode.value;
-            } else {
-                this[opcode.opcode].apply(this, opcode.args);
-            }
+#ifdef DEBUG
+            console.log('OPCODE:', opcode.opcode, opcode.args);
+#endif
+            this[opcode.opcode].apply(this, opcode.args);
         }
 
-        return this.createFunctionContext();
+        return this.createFunctionContext(asObject);
     },
 
     preamble: function () {
@@ -77,6 +83,8 @@ JSCompiler.prototype = {
             var namespace = this.namespace;
             var copies = 'helpers = this.merge(helpers, ' + namespace + '.helpers);';
             out.push(copies);
+        } else {
+            out.push('');
         }
 
         if (!this.env.isSimple) {
@@ -89,26 +97,43 @@ JSCompiler.prototype = {
         this.source = out;
     },
 
-    createFunctionContext: function () {
+    createFunctionContext: function (asObject) {
+        if (!this.isChild) {
+            for (var alias in this.context.aliases) {
+                if (this.context.aliases.hasOwnProperty(alias)) {
+                    this.source[1] = this.source[1] + ', ' + alias + '=' + this.context.aliases[alias];
+                }
+            }
+        }
+
         if (this.source[1]) {
             this.source[1] = 'var ' + this.source[1].substring(2) + ';';
+        }
+
+        // Merge children
+        if (!this.isChild) {
+            this.source[1] += '\n' + this.context.programs.join('\n') + '\n';
         }
 
         if (!this.env.isSimple) {
             this.source.push('return buffer;');
         }
 
-        var params = ['Beard', 'depth0', 'helpers', 'elements', 'data'];
+        var params = this.isChild ? ['depth0', 'data'] : ['Beard', 'depth0', 'helpers', 'elements', 'data'];
 
         for (var i = 0, l = this.env.depths.list.length; i < l; i++) {
-            params.push('depth' + this.environment.depths.list[i]);
+            params.push('depth' + this.env.depths.list[i]);
         }
 
         var source = this.mergeSource();
 
-        params.push(source);
+        if (asObject) {
+            params.push(source);
 
-        return Function.apply(this, params);
+            return Function.apply(this, params);
+        }
+        var functionSource = 'function ' + (this.name || '') + '(' + params.join(',') + ') {\n  ' + source + '}';
+        return functionSource;
     },
 
     // Append the string value of `content` to the current buffer
@@ -132,16 +157,76 @@ JSCompiler.prototype = {
         this.pushStackLiteral(value);
     },
 
-    // Invoke variable
-    invokeVariable: function (name) {
-        var lookup = this.nameLookup('depth' + this.lastContext + '.variables', name, 'context'),
-            local = this.popStack(), // default value
-            nextStack = this.nextStack();
+    // Invoke element
+    invokeElement: function (name) {
+        var params = [this.nameLookup('elements', name, 'element'), 'depth0', 'elements'];
 
-        this.source.push(nextStack + ' = ' + lookup + ';' + nextStack + ' = typeof ' + nextStack + ' === "function" ? ' + nextStack + '.apply(depth0) : ' + nextStack + ';');
-        if (local) {
-            this.source.push(nextStack + ' = ' + nextStack + ' || ' + local + ';');
+        this.push('this.invokeElement(' + params.join(', ') + ')');
+    },
+
+    // Invoke known helper
+    invokeKnownHelper: function (name, isBlock) {
+        var helper = this.setupHelper(name, false, isBlock);
+        this.push(helper.name + '.call(' + helper.callArgs + ')');
+    },
+
+    // Invoke helper
+    invokeHelper: function (name, isBlock) {
+        var helper = this.setupHelper(name, true, isBlock);
+
+        this.context.aliases.helperMissing = 'helpers.helperMissing';
+        this.push(helper.name + ' ? ' + helper.name + '.call(' + helper.callArgs + ') : helperMissing.call(' + helper.helperMissingArgs + ')');
+    },
+
+    // Setup helper
+    setupHelper: function (name, missingArgs, isBlock) {
+        var args = [],
+            foundHelper = this.nameLookup('helpers', name, 'helper');
+
+        this.setupArgs(args, isBlock);
+
+        return {
+            args: args,
+            name: foundHelper,
+            callArgs: ['depth0'].concat(args).join(', '),
+            helperMissingArgs: missingArgs && ["depth0", this.quotedString(name)].concat(args).join(', ')
+        };
+    },
+
+    // Setup arguments
+    setupArgs: function (args, isBlock) {
+        var options = [],
+            arg,
+            inverse,
+            program;
+
+        arg = this.popStack();
+
+        if (isBlock) {
+            inverse = this.popStack();
+            program = this.popStack();
+
+            if (program || inverse) {
+                if (!program) {
+                    this.context.aliases.self = 'this';
+                    program = 'self.noop';
+                }
+
+                if (!inverse) {
+                    this.context.aliases.self = 'this';
+                    inverse = 'self.noop';
+                }
+
+                options.push('inverse:' + inverse);
+                options.push('fn:' + program);
+            }
         }
+
+        args.push(arg);
+        options = '{' + options.join(',') + '}';
+        args.push(options);
+
+        return args.join(', ');
     },
 
     // Coerces `value` to a String and appends it to the current buffer.
@@ -174,6 +259,78 @@ JSCompiler.prototype = {
             def = this.popStack();
 
         this.source.push('if (!' + name + ' && ' + name + ' !== 0) { ' + name + ' = ' + def + '; }');
+    },
+
+    funcCall: function () {
+        this.flushInline();
+
+        var args = this.popStack(),
+            name = this.topStackName();
+
+        this.source.push('if (typeof ' + name + ' === "function") { ' + name + ' = ' + name + '.apply(depth0, ' + args + '); }');
+    },
+
+    pushArgs: function (argc) {
+        this.flushInline();
+
+        var i = 0,
+            arg,
+            args = [];
+
+        for (; i < argc; i += 1) {
+            arg = this.popStack();
+            args.unshift(arg);
+        }
+        this.push('[' + args.join(',') + ']');
+    },
+
+    pushHash: function (length) {
+        this.flushInline();
+
+        var i = 0,
+            item,
+            expr = [];
+
+        for (; i < length; i += 1) {
+            item = this.popStack();
+            expr.unshift(item);
+        }
+        this.push('(' + expr.join(' ') + ')');
+    },
+
+    pushProgram: function (guid) {
+        if (guid != null) {
+            this.pushStackLiteral(this.programExpression(guid));
+        } else {
+            this.pushStackLiteral(null);
+        }
+    },
+
+    programExpression: function (guid) {
+        this.context.aliases.self = "this";
+
+        if (guid == null) {
+            return 'self.noop';
+        }
+
+        var child = this.env.children[guid],
+            depths = child.depths.list,
+            depth,
+            programParams = [child.index, child.name, 'data'],
+            i = 0;
+
+        for (; i < depths.length; i += 1) {
+            depth = depths[i];
+
+            if (depth === 1) {
+                programParams.push('depth0');
+            } else {
+                programParams.push('depth' + (depth - 1));
+            }
+        }
+
+        return (depths.length === 0 ? 'self.program(' : 'self.programWithDepth(') +
+                    programParams.join(', ') + ')';
     },
 
     replaceStack: function (callback) {
@@ -298,9 +455,6 @@ JSCompiler.prototype = {
                 source += line + '\n  ';
             }
         }
-#ifdef DEBUG
-        console.debug('JSCompiler.mergeSource() returns:', source);
-#endif
         return source;
     },
 
@@ -338,6 +492,48 @@ JSCompiler.prototype = {
 
     topStackName: function () {
         return 'stack' + this.stackSlot;
+    },
+
+    compiler: JSCompiler,
+
+    compileChildren: function (env, options) {
+        var children = env.children,
+            i = 0,
+            l = children.length,
+            child,
+            compiler;
+
+        for (; i < l; i += 1) {
+            child = children[i];
+            compiler = new this.compiler();
+
+            var index = this.matchExistingProgram(child);
+
+            if (index == null) {
+                this.context.programs.push(''); // Placeholder to prevent name conflicts for nested children
+                index = this.context.programs.length;
+                child.index = index;
+                child.name = 'program' + index;
+                this.context.programs[index] = compiler.compile(child, options, this.context);
+                this.context.envs[index] = child;
+            } else {
+                child.index = index;
+                child.name = 'program' + index;
+            }
+        }
+    },
+
+    matchExistingProgram: function (child) {
+        var i = 0,
+            l = this.context.envs.length,
+            env;
+
+        for (; i < l; i += 1) {
+            env = this.context.envs[i];
+            if (env && env.equals(child)) {
+                return i;
+            }
+        }
     }
 };
 
