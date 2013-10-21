@@ -10,10 +10,20 @@
     afterEach(function() {
       return tpl = null;
     });
-    return it('should return content', function() {
+    it('should return content', function() {
       tpl.set('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fermentum elementum metus, ac suscipit lectus pulvinar.');
       ret = tpl.render();
       return expect(ret).toBe('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fermentum elementum metus, ac suscipit lectus pulvinar.');
+    });
+    it('should compile an empty string', function() {
+      tpl.set('');
+      ret = tpl.render();
+      return expect(ret).toBe('');
+    });
+    return it('should compile undefined string', function() {
+      tpl.set(void 0);
+      ret = tpl.render();
+      return expect(ret).toBe('');
     });
   });
 
