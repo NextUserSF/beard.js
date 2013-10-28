@@ -75,6 +75,7 @@ data: var -> $1
 
 var: segments -> new yy.VariableNode($1)
    | segments ALT param -> new yy.VariableNode($1, $3)
+   | segments ALT segments -> new yy.VariableNode($1, new yy.VariableNode($3))
    | func SEP segments -> new yy.VariableNode([$1].concat($3))
    | func SEP segments ALT param -> new yy.VariableNode([$1].concat($3), $5)
    ;

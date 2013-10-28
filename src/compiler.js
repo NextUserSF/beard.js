@@ -148,7 +148,11 @@ Compiler.prototype = {
 
         if (variable.def) {
             this[variable.def.type](variable.def);
-            this.opcode('fallback');
+            if (variable.def.type === 'variable') {
+                this.opcode('fallbackVariable');
+            } else {
+                this.opcode('fallback');
+            }
         }
     },
 

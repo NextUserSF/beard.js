@@ -21,7 +21,6 @@
       return expect(ret).toBe('');
     });
     return it('should compile undefined string', function() {
-      tpl.set(void 0);
       ret = tpl.render();
       return expect(ret).toBe('');
     });
@@ -371,10 +370,16 @@
         ret = tpl.render();
         return expect(ret).toBe(1024);
       });
-      return it('should return Boolean', function() {
+      it('should return Boolean', function() {
         tpl.set('<%= variable | true %>');
         ret = tpl.render();
         return expect(ret).toBe(true);
+      });
+      return it('should return Variable', function() {
+        tpl.set('<%= variable | def_variable %>');
+        tpl.addVariable('def_variable', 'Default');
+        ret = tpl.render();
+        return expect(ret).toEqual('Default');
       });
     });
   });

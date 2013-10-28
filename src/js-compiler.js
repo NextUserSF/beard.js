@@ -261,6 +261,15 @@ JSCompiler.prototype = {
         this.source.push('if (!' + name + ' && ' + name + ' !== 0) { ' + name + ' = ' + def + '; }');
     },
 
+    fallbackVariable: function () {
+        this.flushInline();
+
+        var def = this.popStack(),
+            name = this.topStackName();
+
+        this.source.push('if (!' + name + ' && ' + name + ' !== 0) { ' + name + ' = ' + def + '; }');
+    },
+
     funcCall: function () {
         this.flushInline();
 

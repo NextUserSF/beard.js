@@ -289,3 +289,10 @@ describe 'Data Tag', ->
       ret = tpl.render()
 
       expect(ret).toBe true
+
+    it 'should return Variable', ->
+      tpl.set '<%= variable | def_variable %>'
+      tpl.addVariable 'def_variable', 'Default'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Default'
