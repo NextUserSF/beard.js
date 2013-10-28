@@ -77,6 +77,9 @@ Beard.VM = {
     },
 
     invokeElement: function (element, variables, elements) {
+        if (!element) {
+            throw new Error('The element is missing');
+        }
         var template = Beard.compile(element);
         return template(variables, elements);
     }

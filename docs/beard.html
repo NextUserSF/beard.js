@@ -2647,6 +2647,9 @@ JSCompiler.isValidVarName = function (name) {
         <span class="keyword">return</span> <span class="string">''</span>;
     },
     invokeElement: <span class="function"><span class="keyword">function</span> <span class="params">(element, variables, elements)</span> {</span>
+        <span class="keyword">if</span> (!element) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'The element is missing'</span>);
+        }
         <span class="keyword">var</span> template = Beard.compile(element);
         <span class="keyword">return</span> template(variables, elements);
     }

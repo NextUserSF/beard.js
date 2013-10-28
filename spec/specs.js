@@ -428,13 +428,21 @@
         return expect(ret).toEqual('Variable');
       });
     });
-    return describe('Element with Element', function() {
+    describe('Element with Element', function() {
       return it('should return correct value', function() {
         tpl.set('<%@ element %>');
         tpl.addElement('element', '<%@ another_element %>');
         tpl.addElement('another_element', 'Element');
         ret = tpl.render();
         return expect(ret).toEqual('Element');
+      });
+    });
+    return describe('Invalid Element', function() {
+      return it('should do something sane', function() {
+        tpl.set('<%@ element %>');
+        return expect(function() {
+          return tpl.render();
+        }).toThrow('The element is missing');
       });
     });
   });

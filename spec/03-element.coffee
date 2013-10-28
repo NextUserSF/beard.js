@@ -33,3 +33,9 @@ describe 'Element Tag', ->
       ret = tpl.render()
 
       expect(ret).toEqual 'Element'
+
+  describe 'Invalid Element', ->
+    it 'should do something sane', ->
+      tpl.set '<%@ element %>'
+
+      expect(-> tpl.render()).toThrow 'The element is missing'
