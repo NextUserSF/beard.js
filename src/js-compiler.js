@@ -293,6 +293,20 @@ JSCompiler.prototype = {
         this.push('[' + args.join(',') + ']');
     },
 
+    pushExpr: function (length) {
+        this.flushInline();
+
+        var i = 0,
+            item,
+            expr = [];
+
+        for (; i < length; i += 1) {
+            item = this.popStack();
+            expr.unshift(item);
+        }
+        this.push(expr.join(''));
+    },
+
     pushHash: function (length) {
         this.flushInline();
 

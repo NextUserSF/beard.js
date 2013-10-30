@@ -271,6 +271,14 @@ describe 'Data Tag', ->
 
       expect(ret).toEqual 'Default'
 
+  describe 'Variable + String', ->
+    it 'should return correct value', ->
+      tpl.set '<%= "Hello, " + who + "!" %>'
+      tpl.addVariable 'who', 'world'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'Hello, world!'
+
   describe 'Default parameters', ->
     it 'should return String', ->
       tpl.set '<%= variable | "Default" %>'

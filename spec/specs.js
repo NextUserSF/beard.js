@@ -359,6 +359,14 @@
         return expect(ret).toEqual('Default');
       });
     });
+    describe('Variable + String', function() {
+      return it('should return correct value', function() {
+        tpl.set('<%= "Hello, " + who + "!" %>');
+        tpl.addVariable('who', 'world');
+        ret = tpl.render();
+        return expect(ret).toEqual('Hello, world!');
+      });
+    });
     return describe('Default parameters', function() {
       it('should return String', function() {
         tpl.set('<%= variable | "Default" %>');

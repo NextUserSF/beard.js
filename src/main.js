@@ -46,21 +46,38 @@
     };
 
     Beard.getRequired = function (input) {
-        var ast = Beard.parse(input);
-        return ast.statements.reduce(function (previous, current) {
-            switch (current.constructor) {
-                case Beard.AST.DataNode:
-                    if (current.data.constructor === Beard.AST.VariableNode) {
-                        previous.variables.push(current.data.parts[0]);
-                    }
-                    break;
-                case Beard.AST.ElementNode:
-                    previous.elements.push(current.id);
-                    break;
-            }
+        var ast = Beard.parse(input),
+            walk = function (obj) {
+                var ret = { variables: [], elements: [] },
+                    key,
+                    item,
+                    tmp;
 
-            return previous;
-        }, { variables: [], elements: [] });
+                for (key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        item = obj[key];
+
+                        switch (item.constructor) {
+                            case Beard.AST.VariableNode:
+                                ret.variables.push(item.parts[0]);
+                                break;
+                            case Beard.AST.ElementNode:
+                                ret.elements.push(item.id);
+                                break;
+                        }
+
+                        if (typeof item === "object") {
+                            tmp = walk(item);
+                            ret.variables = ret.variables.concat(tmp.variables);
+                            ret.elements = ret.elements.concat(tmp.elements);
+                        }
+                    }
+                }
+
+                return ret;
+            };
+
+        return walk(ast.statements);
     };
 
     this.Beard = Beard;

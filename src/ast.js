@@ -41,6 +41,12 @@ Beard.AST.FuncNode = function (func, args, def) {
     this.def = def || '';
 };
 
+Beard.AST.ExprNode = function (expr) {
+    this.type = 'expr';
+    this.parts = expr;
+    this.isSimple = expr.length === 1;
+};
+
 Beard.AST.CommentNode = function (comment) {
     this.type = 'comment';
     this.comment = comment;

@@ -40,6 +40,7 @@ ID  [a-zA-Z_][a-zA-Z0-9_]*
 <beard>">"                                  return 'GREATER';
 <beard>"<"                                  return 'LESSER';
 <beard>"&&"                                 return 'AND';
+<beard>"+"                                  return 'PLUS';
 <beard>\s+                                  /* ignore whitespace */
 <beard>"%>"                                 this.popState(); return 'CLOSE';
 <beard>'"'("\\"["]|[^"])*'"'                yytext = strip(1,2).replace(/\\"/g,'"'); return 'STRING';

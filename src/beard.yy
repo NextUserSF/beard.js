@@ -65,12 +65,19 @@ closeBlock: END_BLOCK -> $1
 elementTag: OPEN_ELEMENT ID CLOSE -> $2
           ;
 
-dataTag: OPEN_VARIABLE data CLOSE -> $2
+dataTag: OPEN_VARIABLE expr CLOSE -> new yy.ExprNode($2)
        ;
 
 data: var -> $1
     | func -> $1
     | param -> $1
+    ;
+
+exprOperator: PLUS
+            ;
+
+expr: expr exprOperator data { $1.push($2); $1.push($3); $$ = $1; }
+    | data -> [$1]
     ;
 
 var: segments -> new yy.VariableNode($1)

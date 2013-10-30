@@ -207,6 +207,25 @@ Compiler.prototype = {
         }
     },
 
+    expr: function (expr) {
+        var i = 0,
+            l = expr.parts.length,
+            item;
+
+        for (; i < l; i += 1) {
+            item = expr.parts[i];
+            if (typeof item !== 'string') {
+                this[item.type](item);
+            } else {
+                this.opcode('pushLiteral', item);
+            }
+        }
+
+        if (!expr.isSimple) {
+            this.opcode('pushExpr', l);
+        }
+    },
+
     // Compile comment
     comment: function () {},
 
