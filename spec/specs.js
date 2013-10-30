@@ -1001,6 +1001,12 @@
         ret = tpl.render();
         return expect(ret).toEqual('VARIABLE');
       });
+      it('should hande passed expression', function() {
+        tpl.set('<%~ toUpper "Hello, " + who + "!" %>');
+        tpl.addVariable('who', 'World');
+        ret = tpl.render();
+        return expect(ret).toEqual('HELLO, WORLD!');
+      });
       it('should handle multiple passed arguments', function() {
         tpl.set('<%~ toUpper v1, "test", f1() %>');
         tpl.addVariable('v1', 'variable');

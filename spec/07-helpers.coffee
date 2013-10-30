@@ -73,6 +73,13 @@ describe 'Helpers', ->
 
       expect(ret).toEqual 'VARIABLE'
 
+    it 'should hande passed expression', ->
+      tpl.set '<%~ toUpper "Hello, " + who + "!" %>'
+      tpl.addVariable 'who', 'World'
+      ret = tpl.render()
+
+      expect(ret).toEqual 'HELLO, WORLD!'
+
     it 'should handle multiple passed arguments', ->
       tpl.set '<%~ toUpper v1, "test", f1() %>'
       tpl.addVariable 'v1', 'variable'

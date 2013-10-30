@@ -96,7 +96,7 @@ func: segments funcArgs -> new yy.FuncNode($1, $2)
 funcArgs: OP args CP -> $2
         ;
 
-args: args COMMA data { $1.push($3); $$ = $1; }
-    | data -> [$1]
+args: args COMMA expr { $1.push(new yy.ExprNode($3)); $$ = $1; }
+    | expr -> [new yy.ExprNode($1)]
     | '' -> []
     ;

@@ -201,12 +201,14 @@ Compiler.prototype = {
             l = args.length,
             arg;
 
+        console.debug(args);
         for (; i < l; i += 1) {
             arg = args[i];
             this[arg.type](arg);
         }
     },
 
+    // Compile expression
     expr: function (expr) {
         var i = 0,
             l = expr.parts.length,
