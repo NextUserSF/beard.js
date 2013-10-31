@@ -1897,7 +1897,7 @@ Beard.compile = <span class="function"><span class="keyword">function</span> <sp
     options = options || {};
     <span class="keyword">var</span> compiled;
     <span class="function"><span class="keyword">function</span> <span class="title">compile</span> <span class="params">()</span> {</span>
-        <span class="keyword">var</span> ast = Beard.parse(input),
+        <span class="keyword">var</span> ast = input.constructor === Beard.AST.ProgramNode ? input : Beard.parse(input),
             env = <span class="keyword">new</span> Compiler().compile(ast, options),
             tplSpec = <span class="keyword">new</span> Beard.JSCompiler().compile(env, options, <span class="literal">undefined</span>, <span class="literal">true</span>);
         <span class="keyword">return</span> Beard.template(tplSpec);

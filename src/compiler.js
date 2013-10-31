@@ -328,7 +328,7 @@ Beard.compile = function (input, options) {
     var compiled;
 
     function compile () {
-        var ast = Beard.parse(input),
+        var ast = input.constructor === Beard.AST.ProgramNode ? input : Beard.parse(input),
             env = new Compiler().compile(ast, options),
             tplSpec = new Beard.JSCompiler().compile(env, options, undefined, true);
 
