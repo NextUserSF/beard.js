@@ -1693,7 +1693,6 @@ Compiler.prototype = {
         <span class="keyword">var</span> i = <span class="number">0</span>,
             l = args.length,
             arg;
-        console.debug(args);
         <span class="keyword">for</span> (; i &lt; l; i += <span class="number">1</span>) {
             arg = args[i];
             <span class="keyword">this</span>[arg.type](arg);
